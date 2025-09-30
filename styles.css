@@ -21,7 +21,10 @@ body {
   background: var(--bg);
   color: var(--text);
   font: 14px/1.5 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+  overflow-x: hidden; overflow-y: visible; 
 }
+
+
 a {
   color: #a3e4c4;
   text-decoration: none;

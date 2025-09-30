@@ -722,6 +722,38 @@ function wireControls() {
   });
 }
 
+// ---- Post height to parent (Wix) so the iframe can auto-resize ----
+(function initAutoHeightMessaging(){
+  const post = () => {
+    // total document height
+    const h = Math.max(
+      document.documentElement.scrollHeight,
+      document.body?.scrollHeight || 0
+    );
+    // Tell any parent listening (Wix) our height
+    window.parent?.postMessage({ type: 'APP_HEIGHT', height: h }, '*');
+  };
+
+  // Post on load and after layout changes
+  window.addEventListener('load', post);
+  // Observe body size changes (charts/tables/map)
+  if ('ResizeObserver' in window) {
+    const ro = new ResizeObserver(() => post());
+    ro.observe(document.body);
+  }
+  // Also post on navigation/tab changes & window resizes
+  window.addEventListener('resize', () => setTimeout(post, 0));
+
+  // Expose a manual trigger if parent asks
+  window.addEventListener('message', (ev) => {
+    if (ev?.data?.type === 'REQUEST_HEIGHT') post();
+  });
+})();
+
+
+
+
+
 /* ====== Init ====== */
 (async function init() {
   wireTabs();

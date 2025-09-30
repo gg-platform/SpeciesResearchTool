@@ -14,7 +14,7 @@
                  img-src     'self' data: https://*.tile.openstreetmap.org https://unpkg.com;
                  font-src    'self' data:;
                  connect-src 'self' https:;
-                 frame-ancestors 'none';
+                frame-ancestors 'self' https://*.wixsite.com https://*.wix.com;
                  base-uri 'none'"
     />
 
@@ -296,11 +296,11 @@
             </div>
           </div>
         </div>
-          <!-- Class breakdown -->
-          <div id="boccByClass" class="card col-12">
-            <h2>BoCC occurrences by classs</h2>
-            <div class="tbl"></div>
-          </div>
+        <!-- Class breakdown -->
+        <div id="boccByClass" class="card col-12">
+          <h2>BoCC occurrences by classs</h2>
+          <div class="tbl"></div>
+        </div>
         <!-- Three species-in-rows tables by list (each its own card) -->
         <div id="boccRed" class="card col-12">
           <h2>Red list — matched species</h2>
