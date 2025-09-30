@@ -1,0 +1,265 @@
+:root {
+  --brand: #0b5d3f;
+  --brand-600: #0c6b48;
+  --brand-700: #095238;
+  --bg: #0b0d0c;
+  --card: #121512;
+  --text: #e6efe9;
+  --muted: #9fb3a8;
+  --border: #203126;
+  --chip: #163a2a;
+  --ok: #6bb187;
+  --warn: #e7b552;
+  --err: #e37a6b;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  font: 14px/1.5 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
+}
+a {
+  color: #a3e4c4;
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+.appbar {
+  background: linear-gradient(180deg, var(--brand-600), var(--brand));
+  color: #fff;
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+.logo {
+  font-weight: 700;
+  letter-spacing: 0.2px;
+}
+.nav {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.btn {
+  background: var(--chip);
+  color: var(--text);
+  border: 1px solid var(--border);
+  padding: 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.btn.primary {
+  background: #fff;
+  color: var(--brand-700);
+  font-weight: 600;
+}
+.btn:hover {
+  filter: brightness(1.05);
+}
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.container {
+  max-width: 1200px;
+  margin: 18px auto;
+  padding: 0 16px;
+}
+.grid {
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(12, 1fr);
+}
+.card {
+  grid-column: span 12;
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+  box-shadow: 0 1px 10px rgba(0, 0, 0, 0.25);
+  overflow: hidden; 
+}
+
+/* Card spacing safety (in case something isn't in a .grid) */
+.card{ margin:0; }              /* rely on grid gap, not margins */
+.card + .card{ margin-top:16px; } /* fallback if cards are stacked outside grid */
+
+/* Titlebar bottom spacing so next card doesn't touch it */
+.titlebar{ margin-bottom:8px; }
+
+/* Make sure inner “table-scroll”/“tbl” blocks don’t remove spacing */
+.tbl, .table-scroll{ margin-top:8px; }
+/* Fixed-height wrappers so charts don't grow forever */
+.chartbox{
+  position: relative;
+  width: 100%;
+  height: 280px;           /* default height */
+}
+.chartbox.h220{ height: 220px; }
+.chartbox.h240{ height: 240px; }
+.chartbox.h300{ height: 300px; }
+
+/* Canvas fills the wrapper exactly */
+.chartbox canvas{
+  position: absolute;
+  inset: 0;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+/* Optional: remove any global canvas height:auto we added earlier */
+canvas{ max-width:100%; }  /* no height:auto */
+
+@media (min-width: 900px) {
+  .col-6 {
+    grid-column: span 6;
+  }
+  .col-4 {
+    grid-column: span 4;
+  }
+  .col-8 {
+    grid-column: span 8;
+  }
+}
+h1 {
+  font-size: 22px;
+  margin: 0 0 10px;
+}
+h2 {
+  font-size: 18px;
+  margin: 0 0 10px;
+}
+.muted {
+  color: var(--muted);
+}
+.row {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.chip {
+  background: var(--chip);
+  border: 1px solid var(--border);
+  padding: 4px 8px;
+  border-radius: 999px;
+}
+.kbd {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  background: #0c1310;
+  border: 1px solid var(--border);
+  padding: 2px 6px;
+  border-radius: 6px;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+ table-layout:auto;
+}
+th,
+td {
+  border-bottom: 1px solid var(--border);
+  padding: 8px 6px;
+  text-align: left;
+}
+th {
+  color: var(--muted);
+  font-weight: 600;
+}
+.titlebar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 10px;
+}
+.ok {
+  color: var(--ok);
+}
+.warn {
+  color: var(--warn);
+}
+.err {
+  color: var(--err);
+}
+canvas {
+  background: #0a0d0b;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px;
+  max-width:100%; 
+  height:auto;
+}
+.tabs {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0 12px;
+}
+.tab {
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  background: var(--chip);
+  color: var(--text);
+  border-radius: 999px;
+  cursor: pointer;
+}
+.tab.active {
+  background: #fff;
+  color: var(--brand-700);
+  font-weight: 600;
+}
+section[hidden] {
+  display: none !important;
+}
+#mapCanvas {
+  width: 100%;
+  height: 520px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+}
+input[type="text"],
+input[type="number"],
+textarea {
+  width: 100%;
+  padding: 8px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: #0f140f;
+  color: var(--text);
+}
+.help {
+  font-size: 12px;
+  color: var(--muted);
+}
+.infobar{
+  display:flex; align-items:center; gap:8px;
+  padding:8px 12px; margin:0 0 12px 0;
+  background:rgba(22,58,42,.35);
+  border:1px solid var(--border);
+  border-radius:10px; color:var(--muted);
+  overflow:hidden; text-overflow:ellipsis;
+    white-space:normal;                /* allow wrapping */
+  word-break:break-word;
+}
+
+.infobar a{ color:#a3e4c4; max-width:100%; overflow:hidden; text-overflow:ellipsis; display:inline-block; vertical-align:bottom }
+.infobar .sep{ opacity:.7 }
+
+
+th,td{ word-break:break-word; }
+
+/* Horizontal scroll for wide tables on small screens */
+.table-scroll{  overflow:auto; max-width:100%;}
+.table-scroll table{ min-width:560px; } /* prevents squishing columns too far */
+
