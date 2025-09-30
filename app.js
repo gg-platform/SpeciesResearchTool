@@ -1,4 +1,4 @@
-/* ====== Utilities ====== */
+/* ====== Utilities ===== */
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 const escapeHtml = (s) =>
@@ -740,3 +740,4 @@ function wireControls() {
   }
   updateInfoBanners(); // shows “–” until first fetch
 })();
+
