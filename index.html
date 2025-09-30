@@ -9,42 +9,22 @@
     <meta
       http-equiv="Content-Security-Policy"
       content="default-src 'self';
-                 script-src 'self' https://cdn.jsdelivr.net https://unpkg.com;
-                 style-src   'self' https://unpkg.com;
-                 img-src     'self' data: https://*.tile.openstreetmap.org https://unpkg.com;
-                 font-src    'self' data:;
-                 connect-src 'self' https:;
-                frame-ancestors 'self' https://*.wixsite.com https://*.wix.com;
-                 base-uri 'none'"
-    />
-
+               script-src 'self' https://cdn.jsdelivr.net https://unpkg.com;
+               style-src   'self' https://unpkg.com;
+               img-src     'self' data: https://*.tile.openstreetmap.org https://unpkg.com;
+               font-src    'self' data:;
+               connect-src 'self' https:;
+               frame-ancestors 'self' https://*.wixsite.com https://*.wix.com;
+               base-uri 'none'">
     <link rel="stylesheet" href="./styles.css" />
 
     <!-- External libs -->
-    <script
-      src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
-      defer
-    ></script>
-    <link
-      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-      rel="stylesheet"
-    />
-    <script
-      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-      defer
-    ></script>
-    <link
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
-      rel="stylesheet"
-    />
-    <script
-      src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"
-      defer
-    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+    <link  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+    <link  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" rel="stylesheet"/>
+    <link  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" rel="stylesheet"/>
+    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
 
     <script src="./app.js" type="module" defer></script>
   </head>
@@ -79,80 +59,38 @@
             <ol>
               <li>
                 Go to
-                <a
-                  href="https://records.nbnatlas.org/search#tab_spatialSearch"
-                  target="_blank"
-                  rel="noopener"
-                  >NBN Atlas Spatial Search</a
-                >.
+                <a href="https://records.nbnatlas.org/search#tab_spatialSearch" target="_blank" rel="noopener">NBN Atlas Spatial Search</a>.
               </li>
               <li>
-                Either <b>draw a polygon</b> on the map or
-                <b>Import an existing GIS area</b> (e.g., a shapefile/GeoJSON
-                boundary).
+                Either <b>draw a polygon</b> on the map or <b>Import an existing GIS area</b> (e.g., a shapefile/GeoJSON boundary).
               </li>
               <li>Run the search to view results.</li>
-              <li>
-                On the results screen, click <b>API</b> (top-right). Copy the
-                <b>JSON web service API</b> URL.
-              </li>
-              <li>
-                Paste that URL into the field on the right and click
-                <b>Fetch</b>.
-              </li>
+              <li>On the results screen, click <b>API</b> (top-right). Copy the <b>JSON web service API</b> URL.</li>
+              <li>Paste that URL into the field on the right and click <b>Fetch</b>.</li>
             </ol>
 
             <h2>What this app does</h2>
             <ul>
-              <li>
-                <b>Fetches records</b> from your API URL and automatically
-                handles <code>pageSize</code>/<code>startIndex</code>
-                pagination.
-              </li>
-              <li>
-                <b>Overview</b> shows charts (counts by month, classs,
-                providers, basis of record, species) + extra insights (species
-                richness, classs per month). Toggle the
-                <b>data tables</b> behind each chart.
-              </li>
-              <li>
-                <b>BoCC Analysis</b> matches results to the BoCC reference in
-                <code>bocc.json</code> with three easy tables (Red/Amber/Former
-                breeding) and a classs breakdown.
-              </li>
-              <li>
-                <b>BoCC Reference</b> displays the full reference list from
-                <code>bocc.json</code>.
-              </li>
+              <li><b>Fetches records</b> from your API URL and automatically handles <code>pageSize</code>/<code>startIndex</code> pagination.</li>
+              <li><b>Overview</b> shows charts (counts by month, classs, providers, basis of record, species) + extra insights (species richness, classs per month). Toggle the <b>data tables</b> behind each chart.</li>
+              <li><b>BoCC Analysis</b> matches results to the BoCC reference in <code>bocc.json</code> with three easy tables (Red/Amber/Former breeding) and a classs breakdown.</li>
+              <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
               <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
             </ul>
 
             <p class="help">
               Disclaimer & License<br />
               This software and its accompanying materials are provided
-              <strong>"AS IS"</strong>,
-              <strong>without warranty or guarantee of any kind</strong>,
-              express or implied, including but not limited to the warranties of
-              merchantability, fitness for a particular purpose and
-              noninfringement. In no event shall the authors or copyright
-              holders be liable for any claim, damages or other liability,
-              whether in an action of contract, tort or otherwise, arising from,
-              out of or in connection with the software or the use or other
-              dealings in the software.
-              <br />
-              Use of this software is governed by the
-              <strong>MIT License</strong>.
+              <strong>"AS IS"</strong>, <strong>without warranty or guarantee of any kind</strong>, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright
+              holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+              <br />Use of this software is governed by the <strong>MIT License</strong>.
             </p>
           </div>
 
           <div class="card col-4">
             <h2>Fetch data</h2>
             <label for="apiUrl" class="help">API URL</label>
-            <input
-              id="apiUrl"
-              type="text"
-              placeholder="Paste the NBN Atlas Occurrences API URL here"
-            />
+            <input id="apiUrl" type="text" placeholder="Paste the NBN Atlas Occurrences API URL here" />
             <div class="row" style="margin-top: 8px">
               <button id="btnFetch" class="btn primary">Fetch</button>
               <button id="btnCancel" class="btn" disabled>Cancel</button>
@@ -176,36 +114,22 @@
             <div class="titlebar">
               <h1>Overview</h1>
               <div class="row">
-                <span class="chip"
-                  >Total records: <b id="totalRecords">–</b></span
-                >
-                <button id="btnToggleTables" class="btn">
-                  Show data tables
-                </button>
+                <span class="chip">Total records: <b id="totalRecords">–</b></span>
+                <button id="btnToggleTables" class="btn">Show data tables</button>
               </div>
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src"
-                >Source:
-                <a id="infoSrc_overview" href="#" target="_blank" rel="noopener"
-                  >–</a
-                ></span
-              >
+              <span class="src">Source: <a id="infoSrc_overview" href="#" target="_blank" rel="noopener">–</a></span>
               <span class="sep">·</span>
-              <span class="time"
-                >Fetched: <span id="infoTime_overview">–</span></span
-              >
+              <span class="time">Fetched: <span id="infoTime_overview">–</span></span>
             </div>
           </div>
 
           <div class="card col-6">
             <h2>Observations by month</h2>
             <div class="chartbox h220">
-              <canvas
-                id="chartMonths"
-                aria-label="Observations by month"
-              ></canvas>
+              <canvas id="chartMonths" aria-label="Observations by month"></canvas>
             </div>
             <div id="tableMonths" class="data-table" hidden></div>
           </div>
@@ -221,10 +145,7 @@
           <div class="card col-6">
             <h2>Observations by classs</h2>
             <div class="chartbox h220">
-              <canvas
-                id="chartClass"
-                aria-label="Observations by classs"
-              ></canvas>
+              <canvas id="chartClass" aria-label="Observations by classs"></canvas>
             </div>
             <div id="tableClass" class="data-table" hidden></div>
           </div>
@@ -240,10 +161,7 @@
           <div class="card col-12">
             <h2>Top 10 data providers</h2>
             <div class="chartbox h240">
-              <canvas
-                id="chartProviders"
-                aria-label="Top 10 data providers"
-              ></canvas>
+              <canvas id="chartProviders" aria-label="Top 10 data providers"></canvas>
             </div>
             <div id="tableProviders" class="data-table" hidden></div>
           </div>
@@ -251,10 +169,7 @@
           <div class="card col-6">
             <h2>Species richness by month</h2>
             <div class="chartbox h220">
-              <canvas
-                id="chartRichness"
-                aria-label="Species richness by month"
-              ></canvas>
+              <canvas id="chartRichness" aria-label="Species richness by month"></canvas>
             </div>
             <div id="tableRichness" class="data-table" hidden></div>
           </div>
@@ -262,10 +177,7 @@
           <div class="card col-6">
             <h2>Observations by classs per month (stacked)</h2>
             <div class="chartbox h220">
-              <canvas
-                id="chartClassMonthly"
-                aria-label="Observations by classs per month"
-              ></canvas>
+              <canvas id="chartClassMonthly" aria-label="Observations by classs per month"></canvas>
             </div>
             <div id="tableClassMonthly" class="data-table" hidden></div>
           </div>
@@ -278,48 +190,40 @@
           <div class="card col-12">
             <div class="titlebar">
               <h1>BoCC analysis</h1>
-              <div class="muted">
-                Matches your results to the reference list in
-                <code>bocc.json</code>
-              </div>
+              <div class="muted">Matches your results to the reference list in <code>bocc.json</code></div>
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src"
-                >Source:
-                <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener"
-                  >–</a
-                ></span
-              >
+              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">–</a></span>
               <span class="sep">·</span>
-              <span class="time"
-                >Fetched: <span id="infoTime_bocc">–</span></span
-              >
+              <span class="time">Fetched: <span id="infoTime_bocc">–</span></span>
             </div>
           </div>
-        </div>
-        <!-- Class breakdown -->
-        <div id="boccByClass" class="card col-12">
-          <h2>BoCC occurrences by classs</h2>
-          <div class="tbl"></div>
-        </div>
-        <!-- Three species-in-rows tables by list (each its own card) -->
-        <div id="boccRed" class="card col-12">
-          <h2>Red list — matched species</h2>
-          <div class="help">Species | Annotation | Occurrences</div>
-          <div class="tbl"></div>
-        </div>
 
-        <div id="boccAmber" class="card col-12">
-          <h2>Amber list — matched species</h2>
-          <div class="help">Species | Annotation | Occurrences</div>
-          <div class="tbl"></div>
-        </div>
+          <!-- FIRST: Class breakdown -->
+          <div id="boccByClass" class="card col-12">
+            <h2>BoCC occurrences by classs</h2>
+            <div class="tbl"></div>
+          </div>
 
-        <div id="boccFormer" class="card col-12">
-          <h2>Former breeding — matched species</h2>
-          <div class="help">Species | Annotation | Occurrences</div>
-          <div class="tbl"></div>
+          <!-- Then the three species tables -->
+          <div id="boccRed" class="card col-12">
+            <h2>Red list — matched species</h2>
+            <div class="help">Species | Annotation | Occurrences</div>
+            <div class="tbl"></div>
+          </div>
+
+          <div id="boccAmber" class="card col-12">
+            <h2>Amber list — matched species</h2>
+            <div class="help">Species | Annotation | Occurrences</div>
+            <div class="tbl"></div>
+          </div>
+
+          <div id="boccFormer" class="card col-12">
+            <h2>Former breeding — matched species</h2>
+            <div class="help">Species | Annotation | Occurrences</div>
+            <div class="tbl"></div>
+          </div>
         </div>
       </section>
 
@@ -343,33 +247,17 @@
             <div class="titlebar">
               <h1>Map</h1>
               <div class="row">
-                <label class="help"
-                  >Max points:
-                  <input
-                    id="maxPoints"
-                    type="number"
-                    min="100"
-                    max="20000"
-                    step="100"
-                    value="5000"
-                    style="width: 90px"
-                  />
+                <label class="help">Max points:
+                  <input id="maxPoints" type="number" min="100" max="20000" step="100" value="5000" style="width: 90px" />
                 </label>
                 <button id="btnRenderMap" class="btn">Render</button>
               </div>
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src"
-                >Source:
-                <a id="infoSrc_map" href="#" target="_blank" rel="noopener"
-                  >–</a
-                ></span
-              >
+              <span class="src">Source: <a id="infoSrc_map" href="#" target="_blank" rel="noopener">–</a></span>
               <span class="sep">·</span>
-              <span class="time"
-                >Fetched: <span id="infoTime_map">–</span></span
-              >
+              <span class="time">Fetched: <span id="infoTime_map">–</span></span>
             </div>
             <div id="mapCanvas"></div>
           </div>
