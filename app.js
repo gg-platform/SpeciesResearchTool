@@ -539,161 +539,151 @@ function buildBoccReference() {
 
 
 function buildBoccAnalysis() {
-  const redHost   = $("#boccRed .tbl");
-  const amberHost = $("#boccAmber .tbl");
-  const formHost  = $("#boccFormer .tbl");
-  const byClassHost = $("#boccByClass .tbl");
-  const distinctHost = $("#boccDistinct .tbl"); // if you added the distinct table earlier
+  const redHost      = $("#boccRed .tbl");
+  const amberHost    = $("#boccAmber .tbl");
+  const formerHost   = $("#boccFormer .tbl");
+  const byClassHost  = $("#boccByClass .tbl");
+  const distinctHost = $("#boccDistinct .tbl");
 
-  redHost.innerHTML = amberHost.innerHTML = formHost.innerHTML = byClassHost.innerHTML = "";
-  if (distinctHost) distinctHost.innerHTML = "";
+  // Clear hosts
+  [redHost, amberHost, formerHost, byClassHost, distinctHost].forEach(h => { if (h) h.innerHTML = ""; });
 
   if (!state.bocc) {
-    byClassHost.innerHTML = '<div class="muted">BoCC reference not loaded.</div>';
+    if (byClassHost)   byClassHost.innerHTML   = '<div class="muted">BoCC reference not loaded.</div>';
+    if (distinctHost)  distinctHost.innerHTML  = '<div class="muted">BoCC reference not loaded.</div>';
     return;
   }
 
-  // Occurrence counts per species (case-insensitive match to either vernacular or scientific)
-  const occCount = Object.create(null);    // lowerName -> occurrence count
-  const classCountsByList = {};            // List -> class -> occurrence count
+  // ---- 1) Tally occurrences & distinct species (by list + class) ----
+  const occCount = Object.create(null);             // lower(species) -> occurrence count
+  const classOccByList = {};                        // list -> class -> total occurrences
+  const distinctByListClass = {};                   // list -> class -> Set(distinct species, canonical)
 
-  state.rows.forEach((r) => {
+  // helper: ensure nested
+  const ensure = (obj, key, def) => (obj[key] ??= def);
+  const safeClass = (c) => (c || "(unknown)").trim();
+
+  state.rows.forEach(r => {
+    const cls = safeClass(r.classs);
     const names = [r.vernacularName, r.scientificName].filter(Boolean).map(s => s.trim());
-    const cls = (r.classs || "(unknown)").trim();
-    names.forEach((n) => {
+    names.forEach(n => {
       const key = n.toLowerCase();
       const list = state.bocc.speciesToList[key];
       if (!list) return;
+
+      // total occurrences per species
       occCount[key] = (occCount[key] || 0) + 1;
-      classCountsByList[list] = classCountsByList[list] || {};
-      classCountsByList[list][cls] = (classCountsByList[list][cls] || 0) + 1;
+
+      // occurrences by list/class
+      ensure(classOccByList, list, {});
+      classOccByList[list][cls] = (classOccByList[list][cls] || 0) + 1;
+
+      // distinct species by list/class
+      ensure(distinctByListClass, list, {});
+      ensure(distinctByListClass[list], cls, new Set()).add(n); // keep canonical case
     });
   });
 
-  // helper: set "Title (count)" on a card's <h2>
-  function setTitleCount(selector, baseTitle, count) {
-    const h = document.querySelector(selector);
-    if (h) h.textContent = `${baseTitle} (${count})`;
-  }
+  // We will render three matched-species tables: Red / Amber / Former breeding
+  const lists = ["Red", "Amber", "Former breeding"].filter(L => state.bocc.lists.includes(L));
 
-  // Helper to render a species table for a given list and return how many species matched
-  function renderSpeciesTable(listName, hostSelector, titleSelector) {
-    const host = document.querySelector(hostSelector);
-    if (!host) return 0;
-
+  // ---- 2) Species tables (with hyperlink on species) + set H2 titles with counts ----
+  function renderSpeciesTable(listName, host, headingSel) {
     const spec = state.bocc.listToSpecies[listName] || [];
     const rows = spec
-      .map((s) => {
-        const key = s.name.toLowerCase();
+      .map(s => {
+        const key = (s.name || "").toLowerCase();
         const count = occCount[key] || 0;
         return { name: s.name, annotation: s.annotation || "", count };
       })
-      .filter((r) => r.count > 0) // only show matched species
+      .filter(r => r.count > 0)
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
-    // Build table with linkified species
-    const tbl = document.createElement("table");
-    const thead = document.createElement("thead");
-    thead.innerHTML = "<tr><th>Species</th><th>Annotation</th><th>Occurrences</th></tr>";
-    const tbody = document.createElement("tbody");
+    renderTableEl(host, ["Species", "Annotation", "Occurrences"],
+      rows.map(r => [r.name, r.annotation, String(r.count)]),
+      ["Species"] // hyperlink Species column
+    );
 
-    if (!rows.length) {
-      const tr = document.createElement("tr");
-      const td = document.createElement("td");
-      td.colSpan = 3;
-      td.textContent = "(no matches)";
-      tr.appendChild(td);
-      tbody.appendChild(tr);
-    } else {
-      rows.forEach((r) => {
-        const tr = document.createElement("tr");
-
-        const tdS = document.createElement("td");
-        const a = document.createElement("a");
-        a.href = "https://www.google.com/search?q=" + encodeURIComponent(r.name);
-        a.target = "_blank";
-        a.rel = "noopener noreferrer";
-        a.textContent = r.name;
-        tdS.appendChild(a);
-
-        const tdA = document.createElement("td");
-        tdA.textContent = r.annotation;
-
-        const tdC = document.createElement("td");
-        tdC.textContent = String(r.count);
-
-        tr.append(tdS, tdA, tdC);
-        tbody.appendChild(tr);
-      });
+    // Update the <h2> count text, using existing #cardId h2
+    const h2 = $(headingSel);
+    if (h2) {
+      const base = h2.textContent.replace(/\s*\(\d+\)\s*$/, ""); // strip old count
+      h2.textContent = `${base} (${rows.length})`;
     }
-
-    host.innerHTML = "";
-    tbl.append(thead, tbody);
-    host.appendChild(tbl);
-
-    // Update the card title with the species count
-    setTitleCount(titleSelector, `${listName} list — matched species`, rows.length);
-
-    return rows.length;
   }
 
-  // Render three list tables + set counts in titles
-  renderSpeciesTable("Red",   "#boccRed .tbl",   "#boccRed h2");
-  renderSpeciesTable("Amber", "#boccAmber .tbl", "#boccAmber h2");
-  renderSpeciesTable("Former breeding", "#boccFormer .tbl", "#boccFormer h2");
+  renderSpeciesTable("Red",            redHost,    "#boccRed h2");
+  renderSpeciesTable("Amber",          amberHost,  "#boccAmber h2");
+  renderSpeciesTable("Former breeding",formerHost, "#boccFormer h2");
 
-  // Occurrences by classs (lists as rows, classes as columns)
-  const lists = ["Red", "Amber", "Former breeding"].filter((L) => state.bocc.lists.includes(L));
-  const classSet = new Set();
-  lists.forEach((L) => {
-    const cc = classCountsByList[L] || {};
-    Object.keys(cc).forEach((k) => classSet.add(k));
-  });
-  const classes = Array.from(classSet).sort((a, b) => a.localeCompare(b));
+  // ---- 3) BoCC occurrences by classs (lists as rows, classes as columns) ----
+  const classSetOcc = new Set();
+  lists.forEach(L => Object.keys(classOccByList[L] || {}).forEach(c => classSetOcc.add(c)));
+  const classColsOcc = Array.from(classSetOcc).sort((a,b)=>a.localeCompare(b));
 
-  const body = lists.map((L) => {
-    const cc = classCountsByList[L] || {};
-    const total = classes.reduce((a, c) => a + (cc[c] || 0), 0);
-    return [L, String(total), ...classes.map((c) => String(cc[c] || 0))];
+  const bodyOcc = lists.map(L => {
+    const cc = classOccByList[L] || {};
+    const total = classColsOcc.reduce((a,c)=> a + (cc[c] || 0), 0);
+    return [L, String(total), ...classColsOcc.map(c => String(cc[c] || 0))];
   });
 
-  // render occurrences-by-class table
-  (function renderByClass(hostDiv, headers, rows) {
+  renderTableEl(byClassHost, ["List", "Total", ...classColsOcc], bodyOcc);
+
+  // ---- 4) Distinct BoCC species by classs (lists as rows, classes as columns, values = distinct species count) ----
+  const classSetDistinct = new Set();
+  lists.forEach(L => Object.keys(distinctByListClass[L] || {}).forEach(c => classSetDistinct.add(c)));
+  const classColsDistinct = Array.from(classSetDistinct).sort((a,b)=>a.localeCompare(b));
+
+  const bodyDistinct = lists.map(L => {
+    const rowObj = distinctByListClass[L] || {};
+    const totalDistinct = classColsDistinct.reduce((a,c) => a + ((rowObj[c]?.size) || 0), 0);
+    return [L, String(totalDistinct), ...classColsDistinct.map(c => String((rowObj[c]?.size) || 0))];
+  });
+
+  renderTableEl(distinctHost, ["List", "Distinct total", ...classColsDistinct], bodyDistinct);
+
+  // ---- local table builder with linkable columns ----
+  function renderTableEl(hostDiv, headers, rows, linkColsByName = []) {
+    if (!hostDiv) return;
+    const linkIdx = new Set(
+      linkColsByName
+        .map(name => headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase()))
+        .filter(i => i >= 0)
+    );
+
     const tbl = document.createElement("table");
     const thead = document.createElement("thead");
-    thead.appendChild(document.createElement("tr"));
-    headers.forEach(h => {
-      const th = document.createElement("th");
-      th.textContent = h;
-      thead.firstChild.appendChild(th);
-    });
+    thead.appendChild(tr(headers, true));
     const tbody = document.createElement("tbody");
+
     if (!rows.length) {
-      const tr = document.createElement("tr");
       const td = document.createElement("td");
       td.colSpan = headers.length;
       td.textContent = "(no matches)";
-      tr.appendChild(td);
-      tbody.appendChild(tr);
+      const trr = document.createElement("tr");
+      trr.appendChild(td);
+      tbody.appendChild(trr);
     } else {
-      rows.forEach(r => {
-        const tr = document.createElement("tr");
-        r.forEach(cell => {
-          const td = document.createElement("td");
-          td.textContent = cell;
-          tr.appendChild(td);
-        });
-        tbody.appendChild(tr);
-      });
+      rows.forEach(r => tbody.appendChild(tr(r, false)));
     }
-    hostDiv.innerHTML = "";
+
     tbl.append(thead, tbody);
     hostDiv.appendChild(tbl);
-  })(
-    $("#boccByClass .tbl"),
-    ["List", "Total", ...classes],
-    body
-  );
+
+    function tr(arr, head) {
+      const row = document.createElement("tr");
+      arr.forEach((cell, idx) => {
+        const el = document.createElement(head ? "th" : "td");
+        if (!head && linkIdx.has(idx) && cell) {
+          el.appendChild(googleLinkEl(String(cell)));
+        } else {
+          el.textContent = cell;
+        }
+        row.appendChild(el);
+      });
+      return row;
+    }
+  }
 }
 
 
