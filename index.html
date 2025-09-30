@@ -15,7 +15,9 @@
                font-src    'self' data:;
                connect-src 'self' https:;
                frame-ancestors 'self' https://*.wixsite.com https://*.wix.com;
-               base-uri 'none'">
+               base-uri 'none'"
+    />
+
     <link rel="stylesheet" href="./styles.css" />
 
     <!-- External libs -->
@@ -62,27 +64,37 @@
                 <a href="https://records.nbnatlas.org/search#tab_spatialSearch" target="_blank" rel="noopener">NBN Atlas Spatial Search</a>.
               </li>
               <li>
-                Either <b>draw a polygon</b> on the map or <b>Import an existing GIS area</b> (e.g., a shapefile/GeoJSON boundary) the smaller the area/number of obvervations the quicker the results.
+                Either <b>draw a polygon</b> on the map or
+                <b>Import an existing GIS area</b> (e.g., a shapefile/GeoJSON boundary). The smaller the area/number of observations the quicker the results.
               </li>
               <li>Run the search to view results.</li>
-              <li>On the results screen, click <b>API</b> (top-right). Copy the <b>JSON web service API</b> URL.</li>
+              <li>
+                On the results screen, click <b>API</b> (top-right). Copy the
+                <b>JSON web service API</b> URL.
+              </li>
               <li>Paste that URL into the field on the right and click <b>Fetch</b>.</li>
             </ol>
 
             <h2>What this app does</h2>
             <ul>
-              <li><b>Fetches records</b> from your API URL in batches of 500 upto ~200,000.</li>
-              <li><b>Overview</b> shows charts (counts by month, classs, providers, basis of record, species) + extra insights (species richness, classs per month). Toggle the <b>data tables</b> behind each chart.</li>
-              <li><b>Birds of Conservation Concern (BoCC) Analysis</b> matches results to the BoCC reference with three easy tables (Red/Amber/Former breeding) and a classs breakdown.</li>
+              <li><b>Fetches records</b> from your API URL in batches of 500 up to ~200,000.</li>
+              <li>
+                <b>Overview</b> shows charts (counts by month, classs, providers, basis of record, species) + extra insights (species richness, classs per month).
+                Toggle the <b>data tables</b> behind each chart.
+              </li>
+              <li>
+                <b>Birds of Conservation Concern (BoCC) Analysis</b> matches results to the BoCC reference with three easy tables (Red/Amber/Former breeding) and a classs breakdown.
+              </li>
               <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
               <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
             </ul>
 
             <p class="help">
-              Disclaimer & License<br />
-              This software and its accompanying materials are provided
-              <strong>"AS IS"</strong>, <strong>without warranty or guarantee of any kind</strong>, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement. In no event shall the authors or copyright
-              holders be liable for any claim, damages or other liability, whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
+              <b>Disclaimer &amp; License</b><br />
+              This software and its accompanying materials are provided <strong>"AS IS"</strong>,
+              <strong>without warranty or guarantee of any kind</strong>, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
+              In no event shall the authors or copyright holders be liable for any claim, damages or other liability,
+              whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
               <br />Use of this software is governed by the <strong>MIT License</strong>.
             </p>
           </div>
@@ -101,7 +113,7 @@
             <h2>Tips</h2>
             <ul class="muted" style="margin: 0 0 0 18px">
               <li>You can refetch anytime with a different area or filters.</li>
-              <li>Large areas return many records - progress appears above, you will be redirected to the results once all data is fetched.</li>
+              <li>Large areas return many records — progress appears above, you will be redirected to the results once all data is fetched.</li>
             </ul>
           </div>
         </div>
@@ -194,26 +206,25 @@
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">-</a></span>
+              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">–</a></span>
               <span class="sep">·</span>
               <span class="time">Fetched: <span id="infoTime_bocc">–</span></span>
             </div>
           </div>
 
-          <!-- distinct species per list & class -->
-<div id="boccDistinct" class="card col-12">
-  <h2>Distinct BoCC species by classs</h2>
-  <div class="tbl"></div>
-</div>
+          <!-- Distinct species per list & class -->
+          <div id="boccDistinct" class="card col-12">
+            <h2>Distinct BoCC species by classs</h2>
+            <div class="tbl"></div>
+          </div>
 
-          
           <!-- Class breakdown -->
           <div id="boccByClass" class="card col-12">
             <h2>BoCC occurrences by classs</h2>
             <div class="tbl"></div>
           </div>
 
-          <!-- Then the three species tables -->
+          <!-- Matched species tables -->
           <div id="boccRed" class="card col-12">
             <h2>Red list — matched species</h2>
             <div class="help">Species | Annotation | Occurrences</div>
