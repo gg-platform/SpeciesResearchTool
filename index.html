@@ -73,7 +73,7 @@
             <ul>
               <li><b>Fetches records</b> from your API URL and automatically handles <code>pageSize</code>/<code>startIndex</code> pagination.</li>
               <li><b>Overview</b> shows charts (counts by month, classs, providers, basis of record, species) + extra insights (species richness, classs per month). Toggle the <b>data tables</b> behind each chart.</li>
-              <li><b>BoCC Analysis</b> matches results to the BoCC reference in <code>bocc.json</code> with three easy tables (Red/Amber/Former breeding) and a classs breakdown.</li>
+              <li><b>Birds of Conservation Concern (BoCC) Analysis</b> matches results to the BoCC reference in <a href="" table.</code> with three easy tables (Red/Amber/Former breeding) and a classs breakdown.</li>
               <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
               <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
             </ul>
@@ -189,12 +189,12 @@
         <div class="grid">
           <div class="card col-12">
             <div class="titlebar">
-              <h1>BoCC analysis</h1>
-              <div class="muted">Matches your results to the reference list in <code>bocc.json</code></div>
+              <h1>Birds of Conservation Concern (BoCC) analysis</h1>
+              <div class="muted">Matches your results to the reference list in <code data-goto="boccRef">bocc.json</code></div>
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">–</a></span>
+              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">-</a></span>
               <span class="sep">·</span>
               <span class="time">Fetched: <span id="infoTime_bocc">–</span></span>
             </div>
@@ -232,7 +232,7 @@
         <div class="grid">
           <div class="card col-12">
             <div class="titlebar">
-              <h1>BoCC reference</h1>
+              <h1>Birds of Conservation Concern reference</h1>
               <div class="muted">Sourced from <code>bocc.json</code></div>
             </div>
             <div id="boccRefTable"></div>
