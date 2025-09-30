@@ -545,7 +545,6 @@ function buildBoccAnalysis() {
   const byClassHost  = $("#boccByClass .tbl");
   const distinctHost = $("#boccDistinct .tbl");
 
-  // Clear hosts
   [redHost, amberHost, formerHost, byClassHost, distinctHost].forEach(h => { if (h) h.innerHTML = ""; });
 
   if (!state.bocc) {
@@ -554,12 +553,11 @@ function buildBoccAnalysis() {
     return;
   }
 
-  // ---- 1) Tally occurrences & distinct species (by list + class) ----
-  const occCount = Object.create(null);             // lower(species) -> occurrence count
-  const classOccByList = {};                        // list -> class -> total occurrences
-  const distinctByListClass = {};                   // list -> class -> Set(distinct species, canonical)
+  // Totals
+  const occCount = Object.create(null);   // normName(species) -> occurrence count
+  const classOccByList = {};              // list -> class -> total occurrences
+  const distinctByListClass = {};         // list -> class -> Set(canonical species names)
 
-  // helper: ensure nested
   const ensure = (obj, key, def) => (obj[key] ??= def);
   const safeClass = (c) => (c || "(unknown)").trim();
 
@@ -567,47 +565,44 @@ function buildBoccAnalysis() {
     const cls = safeClass(r.classs);
     const names = [r.vernacularName, r.scientificName].filter(Boolean).map(s => s.trim());
     names.forEach(n => {
-      const key = n.toLowerCase();
+      const key  = normName(n);                        // ✅ use normalized key
       const list = state.bocc.speciesToList[key];
       if (!list) return;
 
-      // total occurrences per species
       occCount[key] = (occCount[key] || 0) + 1;
 
-      // occurrences by list/class
       ensure(classOccByList, list, {});
       classOccByList[list][cls] = (classOccByList[list][cls] || 0) + 1;
 
-      // distinct species by list/class
       ensure(distinctByListClass, list, {});
-      ensure(distinctByListClass[list], cls, new Set()).add(n); // keep canonical case
+      ensure(distinctByListClass[list], cls, new Set()).add(n);
     });
   });
 
-  // We will render three matched-species tables: Red / Amber / Former breeding
   const lists = ["Red", "Amber", "Former breeding"].filter(L => state.bocc.lists.includes(L));
 
-  // ---- 2) Species tables (with hyperlink on species) + set H2 titles with counts ----
+  // Species tables + counts in H2
   function renderSpeciesTable(listName, host, headingSel) {
     const spec = state.bocc.listToSpecies[listName] || [];
     const rows = spec
       .map(s => {
-        const key = (s.name || "").toLowerCase();
+        const key = normName(s.name);                  // ✅ normalized lookup
         const count = occCount[key] || 0;
         return { name: s.name, annotation: s.annotation || "", count };
       })
       .filter(r => r.count > 0)
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
-    renderTableEl(host, ["Species", "Annotation", "Occurrences"],
+    renderTableEl(
+      host,
+      ["Species", "Annotation", "Occurrences"],
       rows.map(r => [r.name, r.annotation, String(r.count)]),
-      ["Species"] // hyperlink Species column
+      ["Species"]
     );
 
-    // Update the <h2> count text, using existing #cardId h2
     const h2 = $(headingSel);
     if (h2) {
-      const base = h2.textContent.replace(/\s*\(\d+\)\s*$/, ""); // strip old count
+      const base = h2.textContent.replace(/\s*\(\d+\)\s*$/, "");
       h2.textContent = `${base} (${rows.length})`;
     }
   }
@@ -616,7 +611,7 @@ function buildBoccAnalysis() {
   renderSpeciesTable("Amber",          amberHost,  "#boccAmber h2");
   renderSpeciesTable("Former breeding",formerHost, "#boccFormer h2");
 
-  // ---- 3) BoCC occurrences by classs (lists as rows, classes as columns) ----
+  // Occurrences by classs
   const classSetOcc = new Set();
   lists.forEach(L => Object.keys(classOccByList[L] || {}).forEach(c => classSetOcc.add(c)));
   const classColsOcc = Array.from(classSetOcc).sort((a,b)=>a.localeCompare(b));
@@ -626,10 +621,9 @@ function buildBoccAnalysis() {
     const total = classColsOcc.reduce((a,c)=> a + (cc[c] || 0), 0);
     return [L, String(total), ...classColsOcc.map(c => String(cc[c] || 0))];
   });
-
   renderTableEl(byClassHost, ["List", "Total", ...classColsOcc], bodyOcc);
 
-  // ---- 4) Distinct BoCC species by classs (lists as rows, classes as columns, values = distinct species count) ----
+  // Distinct species by classs (counts of unique species)
   const classSetDistinct = new Set();
   lists.forEach(L => Object.keys(distinctByListClass[L] || {}).forEach(c => classSetDistinct.add(c)));
   const classColsDistinct = Array.from(classSetDistinct).sort((a,b)=>a.localeCompare(b));
@@ -639,10 +633,9 @@ function buildBoccAnalysis() {
     const totalDistinct = classColsDistinct.reduce((a,c) => a + ((rowObj[c]?.size) || 0), 0);
     return [L, String(totalDistinct), ...classColsDistinct.map(c => String((rowObj[c]?.size) || 0))];
   });
-
   renderTableEl(distinctHost, ["List", "Distinct total", ...classColsDistinct], bodyDistinct);
 
-  // ---- local table builder with linkable columns ----
+  // table builder
   function renderTableEl(hostDiv, headers, rows, linkColsByName = []) {
     if (!hostDiv) return;
     const linkIdx = new Set(
