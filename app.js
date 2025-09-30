@@ -75,24 +75,24 @@ function showTab(id) {
   $$(".appbar .btn").forEach((b) =>
     b.classList.toggle("primary", b.dataset.goto === id)
   );
-  // If user opens the Map tab, make sure the map is created & sized
+
   if (id === "map") {
-    // Create map if needed
     ensureMap();
-    // Defer to after layout so Leaflet can measure the visible container
     setTimeout(() => {
-      try {
-        state.map.invalidateSize();
-      } catch (e) {}
+      try { state.map.invalidateSize(); } catch (e) {}
+      // NEW: auto-render when entering the map tab if we have rows
+      if (state.rows.length) renderMap();
     }, 0);
   }
-  if (id === 'overview') {
-  // If charts exist, just resize; if not yet built (first visit), build then resize
-  if (Object.keys(state.charts).length) resizeAllCharts();
-  else if (state.rows.length) { buildOverview(); }
-}
+
+  if (id === "overview") {
+    if (Object.keys(state.charts).length) resizeAllCharts();
+    else if (state.rows.length) { buildOverview(); }
+  }
+
   updateInfoBanners();
 }
+
 
 function wireTabs() {
   $$(".tab").forEach((t) =>
@@ -187,6 +187,12 @@ function mapRows(occ) {
     lat: Number(o.decimalLatitude),
     lon: Number(o.decimalLongitude),
   }));
+}
+// If user is currently on the Map tab, render right away
+const current = $$(".tab").find(t => t.classList.contains("active"))?.dataset.target;
+if (current === "map") {
+  ensureMap();
+  renderMap();
 }
 function parseDateFromStrings(a, b) {
   const s = (a || b || "").trim();
@@ -672,13 +678,14 @@ function renderMap() {
     bounds = [];
   pts.forEach((p) => {
     const m = L.marker([p.lat, p.lon]);
-    m.bindPopup(
-      `<strong>${escapeHtml(p.name)}</strong>` +
-        (p.sci ? `<div><em>${escapeHtml(p.sci)}</em></div>` : "") +
-        `<div>Class: ${escapeHtml(p.cls)}</div>` +
-        `<div>Date: ${escapeHtml(p.date)}</div>` +
-        `<div>Provider: ${escapeHtml(p.provider)}</div>`
-    );
+   m.bindPopup(
+  `<strong><a href="https://www.google.com/search?q=${encodeURIComponent(p.name)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.name)}</a></strong>` +
+  (p.sci ? `<div><em>${escapeHtml(p.sci)}</em></div>` : "") +
+  `<div>Class: ${escapeHtml(p.cls)}</div>` +
+  `<div>Date: ${escapeHtml(p.date)}</div>` +
+  `<div>Provider: ${escapeHtml(p.provider)}</div>`
+);
+
     markers.push(m);
     bounds.push([p.lat, p.lon]);
   });
