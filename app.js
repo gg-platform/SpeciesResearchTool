@@ -249,6 +249,7 @@ function renderTable(hostSel, headers, rows, linkColsByName = []) {
   }
 }
 
+
 /* ====== Charts (Chart.js) ====== */
 function destroyCharts() {
   Object.values(state.charts).forEach((c) => c?.destroy());
@@ -635,6 +636,7 @@ function buildBoccAnalysis() {
     }
   }
 }
+
 
 /* ====== Map (Leaflet) ====== */
 function ensureMap() {
