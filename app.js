@@ -1,4 +1,13 @@
 /* ====== Utilities ===== */
+function googleLinkEl(text){
+  const a = document.createElement('a');
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  a.href = 'https://www.google.com/search?q=' + encodeURIComponent(text);
+  a.textContent = text;
+  return a;
+}
+
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 const escapeHtml = (s) =>
@@ -189,13 +198,22 @@ function parseDateFromStrings(a, b) {
 }
 
 /* ====== Data table helpers ====== */
-function renderTable(hostSel, headers, rows) {
+function renderTable(hostSel, headers, rows, linkColsByName = []) {
   const host = $(hostSel);
   host.innerHTML = "";
+
+  // Map header names -> indexes for linkifying
+  const linkIdx = new Set(
+    linkColsByName
+      .map(name => headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase()))
+      .filter(i => i >= 0)
+  );
+
   const tbl = document.createElement("table");
   const thead = document.createElement("thead");
   thead.appendChild(tr(headers, true));
   const tbody = document.createElement("tbody");
+
   if (!rows.length) {
     const td = document.createElement("td");
     td.colSpan = headers.length;
@@ -206,14 +224,19 @@ function renderTable(hostSel, headers, rows) {
   } else {
     rows.forEach((r) => tbody.appendChild(tr(r, false)));
   }
+
   tbl.append(thead, tbody);
   host.appendChild(tbl);
 
   function tr(arr, head) {
     const row = document.createElement("tr");
-    arr.forEach((cell) => {
+    arr.forEach((cell, idx) => {
       const el = document.createElement(head ? "th" : "td");
-      el.textContent = cell;
+      if (!head && linkIdx.has(idx) && cell) {
+        el.appendChild(googleLinkEl(String(cell)));
+      } else {
+        el.textContent = cell;
+      }
       row.appendChild(el);
     });
     return row;
@@ -375,11 +398,13 @@ function buildOverview() {
     ["Month", "Count"],
     months.map((m, i) => [m, String(monthCounts[i])])
   );
-  renderTable(
-    "#tableSpecies",
-    ["Species", "Count"],
-    spTop.map((x) => [x.k, String(x.v)])
-  );
+renderTable(
+  "#tableSpecies",
+  ["Species", "Count"],
+  spTop.map((x) => [x.k, String(x.v)]),
+  ["Species"]  // <- linkify this column
+);
+
   renderTable(
     "#tableClass",
     ["Class", "Count"],
@@ -470,12 +495,16 @@ function buildBoccReference() {
   (state.bocc.lists || []).forEach((L) => {
     (state.bocc.listToSpecies[L] || []).forEach((s) => {
       const tr = document.createElement("tr");
+
       const tdL = document.createElement("td");
       tdL.textContent = L;
+
       const tdS = document.createElement("td");
-      tdS.textContent = s.name;
+      tdS.appendChild(googleLinkEl(s.name)); // <- hyperlink to Google
+
       const tdA = document.createElement("td");
       tdA.textContent = s.annotation || "";
+
       tr.append(tdL, tdS, tdA);
       tb.appendChild(tr);
     });
@@ -483,6 +512,7 @@ function buildBoccReference() {
   table.appendChild(tb);
   host.appendChild(table);
 }
+
 
 function buildBoccAnalysis() {
   const redHost = $("#boccRed .tbl");
@@ -496,15 +526,13 @@ function buildBoccAnalysis() {
       "";
 
   if (!state.bocc) {
-    byClassHost.innerHTML =
-      '<div class="muted">BoCC reference not loaded.</div>';
+    byClassHost.innerHTML = '<div class="muted">BoCC reference not loaded.</div>';
     return;
   }
 
   // Occurrence counts per species (case-insensitive match to either vernacular or scientific)
   const occCount = Object.create(null); // lowerName -> count
   const classCountsByList = {}; // List -> class -> count
-  const speciesLowerToCanonical = Object.create(null);
 
   state.rows.forEach((r) => {
     const names = [r.vernacularName, r.scientificName]
@@ -513,7 +541,6 @@ function buildBoccAnalysis() {
     const cls = (r.classs || "(unknown)").trim();
     names.forEach((n) => {
       const key = n.toLowerCase();
-      speciesLowerToCanonical[key] = speciesLowerToCanonical[key] || n;
       const list = state.bocc.speciesToList[key];
       if (!list) return;
       occCount[key] = (occCount[key] || 0) + 1;
@@ -537,7 +564,8 @@ function buildBoccAnalysis() {
     renderTableEl(
       host,
       ["Species", "Annotation", "Occurrences"],
-      rows.map((r) => [r.name, r.annotation, String(r.count)])
+      rows.map((r) => [r.name, r.annotation, String(r.count)]),
+      ["Species"] // <- linkify Species column
     );
   }
   renderSpeciesTable("Red", redHost);
@@ -561,7 +589,14 @@ function buildBoccAnalysis() {
   });
   renderTableEl(byClassHost, ["List", "Total", ...classes], body);
 
-  function renderTableEl(hostDiv, headers, rows) {
+  // local table builder with linkable columns
+  function renderTableEl(hostDiv, headers, rows, linkColsByName = []) {
+    const linkIdx = new Set(
+      linkColsByName
+        .map(name => headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase()))
+        .filter(i => i >= 0)
+    );
+
     const tbl = document.createElement("table");
     const thead = document.createElement("thead");
     thead.appendChild(tr(headers, true));
@@ -581,9 +616,13 @@ function buildBoccAnalysis() {
 
     function tr(arr, head) {
       const row = document.createElement("tr");
-      arr.forEach((cell) => {
+      arr.forEach((cell, idx) => {
         const el = document.createElement(head ? "th" : "td");
-        el.textContent = cell;
+        if (!head && linkIdx.has(idx) && cell) {
+          el.appendChild(googleLinkEl(String(cell)));
+        } else {
+          el.textContent = cell;
+        }
         row.appendChild(el);
       });
       return row;
@@ -770,6 +809,6 @@ function wireControls() {
       e.message || String(e)
     )}).</div>`;
   }
-  updateInfoBanners(); // shows “–” until first fetch
+  updateInfoBanners(); // shows blank until first fetch
 })();
 
