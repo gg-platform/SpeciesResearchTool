@@ -467,9 +467,12 @@ async function loadBoccJson() {
   const res = await fetch("./bocc.json", { cache: "no-store" });
   if (!res.ok) throw new Error(`Failed to load bocc.json (${res.status})`);
   const j = await res.json();
+
   const listToSpecies = {};
   const speciesToList = {};
+  const speciesLowerToName = {};   // canonical display name
   const lists = [];
+
   (j.lists || []).forEach((entry) => {
     const L = entry.list;
     lists.push(L);
@@ -478,13 +481,16 @@ async function loadBoccJson() {
       annotation: s.annotation || "",
     }));
     (entry.species || []).forEach((s) => {
-      if (s?.name) {
-        speciesToList[s.name.trim().toLowerCase()] = L;
-      }
+      if (!s?.name) return;
+      const key = s.name.trim().toLowerCase();
+      speciesToList[key] = L;
+      speciesLowerToName[key] = s.name; // original spelling
     });
   });
-  state.bocc = { listToSpecies, speciesToList, lists };
+
+  state.bocc = { listToSpecies, speciesToList, speciesLowerToName, lists };
 }
+
 
 /* ====== BoCC Analysis & Reference ====== */
 function buildBoccReference() {
@@ -522,102 +528,123 @@ function buildBoccReference() {
 
 
 function buildBoccAnalysis() {
-  const redHost = $("#boccRed .tbl");
-  const amberHost = $("#boccAmber .tbl");
-  const formHost = $("#boccFormer .tbl");
+  const redHost     = $("#boccRed .tbl");
+  const amberHost   = $("#boccAmber .tbl");
+  const formHost    = $("#boccFormer .tbl");
   const byClassHost = $("#boccByClass .tbl");
+  const distinctHost= $("#boccDistinct .tbl"); // NEW
   redHost.innerHTML =
     amberHost.innerHTML =
     formHost.innerHTML =
     byClassHost.innerHTML =
-      "";
+    distinctHost.innerHTML = "";
 
   if (!state.bocc) {
-    byClassHost.innerHTML = '<div class="muted">BoCC reference not loaded.</div>';
+    const msg = '<div class="muted">BoCC reference not loaded.</div>';
+    byClassHost.innerHTML = msg;
+    distinctHost.innerHTML = msg;
     return;
   }
 
-  // Occurrence counts per species (case-insensitive match to either vernacular or scientific)
-  const occCount = Object.create(null); // lowerName -> count
-  const classCountsByList = {}; // List -> class -> count
+  // Tallies by occurrences
+  const occCount = Object.create(null);     // lowerName -> occurrences
+  const classCountsByList = {};            // List -> class -> occurrences
+
+  // NEW: distinct species set per (list, class)
+  const speciesSetByListClass = {};        // List -> class -> Set(canonical species)
+  const canonicalMap = state.bocc.speciesLowerToName || {};
 
   state.rows.forEach((r) => {
-    const names = [r.vernacularName, r.scientificName]
-      .filter(Boolean)
-      .map((s) => s.trim());
+    const names = [r.vernacularName, r.scientificName].filter(Boolean).map(s => s.trim());
     const cls = (r.classs || "(unknown)").trim();
     names.forEach((n) => {
       const key = n.toLowerCase();
       const list = state.bocc.speciesToList[key];
       if (!list) return;
+
+      // occurrences
       occCount[key] = (occCount[key] || 0) + 1;
-      classCountsByList[list] = classCountsByList[list] || {};
+      (classCountsByList[list] ||= {});
       classCountsByList[list][cls] = (classCountsByList[list][cls] || 0) + 1;
+
+      // distinct set
+      const canonical = canonicalMap[key] || n;
+      (speciesSetByListClass[list] ||= {});
+      (speciesSetByListClass[list][cls] ||= new Set()).add(canonical);
     });
   });
 
-  // Helper to render a species table for a given list
+  // Helper: species table per list
   function renderSpeciesTable(listName, host) {
     const spec = state.bocc.listToSpecies[listName] || [];
     const rows = spec
       .map((s) => {
         const key = s.name.toLowerCase();
-        const count = occCount[key] || 0;
-        return { name: s.name, annotation: s.annotation || "", count };
+        return { name: s.name, annotation: s.annotation || "", count: occCount[key] || 0 };
       })
-      .filter((r) => r.count > 0) // show only matched species
+      .filter((r) => r.count > 0)
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
     renderTableEl(
       host,
       ["Species", "Annotation", "Occurrences"],
       rows.map((r) => [r.name, r.annotation, String(r.count)]),
-      ["Species"] // <- linkify Species column
+      ["Species"] // hyperlink Species
     );
   }
+
   renderSpeciesTable("Red", redHost);
   renderSpeciesTable("Amber", amberHost);
   renderSpeciesTable("Former breeding", formHost);
 
-  // Classs breakdown table (lists as rows, classes as columns)
-  const lists = ["Red", "Amber", "Former breeding"].filter((L) =>
-    state.bocc.lists.includes(L)
-  );
-  const classSet = new Set();
-  lists.forEach((L) => {
+  // ---- Existing: occurrences by class (lists as rows) ----
+  const lists = ["Red", "Amber", "Former breeding"].filter(L => state.bocc.lists.includes(L));
+  const classSetOcc = new Set();
+  lists.forEach((L) => Object.keys(classCountsByList[L] || {}).forEach(c => classSetOcc.add(c)));
+  const classesOcc = Array.from(classSetOcc).sort((a,b)=>a.localeCompare(b));
+  const bodyOcc = lists.map((L) => {
     const cc = classCountsByList[L] || {};
-    Object.keys(cc).forEach((k) => classSet.add(k));
+    const total = classesOcc.reduce((a,c)=>a+(cc[c]||0),0);
+    return [L, String(total), ...classesOcc.map(c => String(cc[c]||0))];
   });
-  const classes = Array.from(classSet).sort((a, b) => a.localeCompare(b));
-  const body = lists.map((L) => {
-    const cc = classCountsByList[L] || {};
-    const total = classes.reduce((a, c) => a + (cc[c] || 0), 0);
-    return [L, String(total), ...classes.map((c) => String(cc[c] || 0))];
-  });
-  renderTableEl(byClassHost, ["List", "Total", ...classes], body);
+  renderTableEl(byClassHost, ["List", "Total", ...classesOcc], bodyOcc);
 
-  // local table builder with linkable columns
+  // ---- NEW: distinct species counts by class (lists as rows) ----
+  const classSetDistinct = new Set();
+  lists.forEach((L) => Object.keys(speciesSetByListClass[L] || {}).forEach(c => classSetDistinct.add(c)));
+  const classesDistinct = Array.from(classSetDistinct).sort((a,b)=>a.localeCompare(b));
+
+  const bodyDistinct = lists.map((L) => {
+    const perClass = speciesSetByListClass[L] || {};
+    const counts   = classesDistinct.map(c => (perClass[c]?.size || 0));
+    const total    = counts.reduce((a,n)=>a+n,0);
+    return [L, String(total), ...counts.map(String)];
+  });
+  renderTableEl(distinctHost, ["List", "Total distinct species", ...classesDistinct], bodyDistinct);
+
+  // Local table builder with optional link columns
   function renderTableEl(hostDiv, headers, rows, linkColsByName = []) {
     const linkIdx = new Set(
       linkColsByName
         .map(name => headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase()))
         .filter(i => i >= 0)
     );
-
     const tbl = document.createElement("table");
     const thead = document.createElement("thead");
     thead.appendChild(tr(headers, true));
     const tbody = document.createElement("tbody");
+
     if (!rows.length) {
-      const td = document.createElement("td");
-      td.colSpan = headers.length;
-      td.textContent = "(no matches)";
-      const trr = document.createElement("tr");
-      trr.appendChild(td);
-      tbody.appendChild(trr);
+      const tr0 = document.createElement("tr");
+      const td0 = document.createElement("td");
+      td0.colSpan = headers.length;
+      td0.textContent = "(no matches)";
+      tr0.appendChild(td0);
+      tbody.appendChild(tr0);
     } else {
       rows.forEach((r) => tbody.appendChild(tr(r, false)));
     }
+
     tbl.append(thead, tbody);
     hostDiv.appendChild(tbl);
 
@@ -625,11 +652,8 @@ function buildBoccAnalysis() {
       const row = document.createElement("tr");
       arr.forEach((cell, idx) => {
         const el = document.createElement(head ? "th" : "td");
-        if (!head && linkIdx.has(idx) && cell) {
-          el.appendChild(googleLinkEl(String(cell)));
-        } else {
-          el.textContent = cell;
-        }
+        if (!head && linkIdx.has(idx) && cell) el.appendChild(googleLinkEl(String(cell)));
+        else el.textContent = cell;
         row.appendChild(el);
       });
       return row;
