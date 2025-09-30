@@ -138,7 +138,7 @@ async function fetchAll(url, statusCb) {
       startIndex += pageSize;
       pages++;
       statusCb?.(`Fetched page ${pages} (${out.length}/${total})`);
-      if (pages > 200) throw new Error("Safety cap reached (200 pages)");
+      if (pages > 400) throw new Error("Safety cap reached (400 pages)");
     }
     statusCb?.(`Done. ${out.length} records.`);
     return out;
