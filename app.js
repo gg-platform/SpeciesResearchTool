@@ -55,7 +55,7 @@ function updateInfoBanners() {
         a.href = url;
         a.title = url;
       } else {
-        a.textContent = "–";
+        a.textContent = "-";
         a.removeAttribute("href");
         a.removeAttribute("title");
       }
@@ -138,7 +138,7 @@ async function fetchAll(url, statusCb) {
   try {
     let startIndex = 0,
       pageSize = 500,
-      maxPages = 400
+      maxPages = 400,
       pages = 0,
       total = Infinity;
     url = upsertQueryParam(normalizeUrl(url), "pageSize", String(pageSize));
