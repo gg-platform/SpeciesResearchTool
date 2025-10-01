@@ -138,6 +138,7 @@ async function fetchAll(url, statusCb) {
   try {
     let startIndex = 0,
       pageSize = 500,
+      maxPages = 400
       pages = 0,
       total = Infinity;
     url = upsertQueryParam(normalizeUrl(url), "pageSize", String(pageSize));
@@ -158,7 +159,7 @@ async function fetchAll(url, statusCb) {
       startIndex += pageSize;
       pages++;
       statusCb?.(`Fetched page ${pages} (${out.length}/${total})`);
-      if (pages > 400) throw new Error("Safety cap reached (400 pages)");
+      if (pages > maxPages) throw new Error(`Safety cap reached (${maxPages} pages)`);
     }
     statusCb?.(`Done. ${out.length} records.`);
     return out;
