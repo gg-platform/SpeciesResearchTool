@@ -35,20 +35,22 @@
       <div class="logo">Species Research Tool</div>
       <nav class="nav">
         <button class="btn primary" data-goto="home">Home</button>
-        <button class="btn" data-goto="overview">Overview</button>
-        <button class="btn" data-goto="bocc">BoCC Analysis</button>
-        <button class="btn" data-goto="boccRef">BoCC Reference</button>
-        <button class="btn" data-goto="map">Map</button>
+        <button class="btn" data-goto="overview">Results - overview</button>
+        <button class="btn" data-goto="bocc">Resutls - BoCC Analysis</button>
+        <button class="btn" data-goto="map">Results - Map</button>
+        <button class="btn" data-goto="boccRef">Reference</button>
+     
       </nav>
     </header>
 
     <main class="container">
       <div class="tabs">
         <span class="tab active" data-target="home">Home</span>
-        <span class="tab" data-target="overview">Overview</span>
-        <span class="tab" data-target="bocc">BoCC Analysis</span>
-        <span class="tab" data-target="boccRef">BoCC Reference</span>
-        <span class="tab" data-target="map">Map</span>
+        <span class="tab" data-target="overview">Results - overview</span>
+        <span class="tab" data-target="bocc">Results - BoCC Analysis</span>
+        <span class="tab" data-target="map">Results - Map</span>
+        <span class="tab" data-target="boccRef">Reference</span>
+        
       </div>
 
       <!-- HOME -->
@@ -87,6 +89,7 @@
               </li>
               <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
               <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
+              <li>We've left an example link in the search box so you can check out how results appear.</li>
             </ul>
 
             <p class="help">
@@ -101,8 +104,8 @@
 
           <div class="card col-4">
             <h2>Fetch data</h2>
-            <label for="apiUrl" class="help">API URL</label>
-            <input id="apiUrl" type="text" placeholder="Paste the NBN Atlas Occurrences API URL here" />
+            <label for="apiUrl" class="help">Paste your NBN Atlas Occurrences API URL here</label>
+            <input id="apiUrl" type="text" placeholder="Paste the NBN Atlas Occurrences API URL here" value="https://records-ws.nbnatlas.org/occurrences/search?q=*%3A*&fq=-occurrence_status%3A%22absent%22&lat=51.49289&lon=-2.5478497&radius=0.4" />
             <div class="row" style="margin-top: 8px">
               <button id="btnFetch" class="btn primary">Fetch</button>
               <button id="btnCancel" class="btn" disabled>Cancel</button>
