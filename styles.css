@@ -115,6 +115,7 @@ a:hover {
 .chartbox.h220{ height: 220px; }
 .chartbox.h240{ height: 240px; }
 .chartbox.h300{ height: 300px; }
+.chartbox.h600{ height: 600px; }
 
 /* Canvas fills the wrapper exactly */
 .chartbox canvas{
@@ -269,4 +270,65 @@ th,td{ word-break:break-word; }
 /* Horizontal scroll for wide tables on small screens */
 .table-scroll{  overflow:auto; max-width:100%;}
 .table-scroll table{ min-width:560px; } /* prevents squishing columns too far */
+
+/* ===== Modal Overlay & Dialog ===== */
+#modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 2000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(11, 13, 12, 0.55);
+  transition: opacity 0.2s;
+}
+#modal[aria-hidden="true"] {
+  opacity: 0;
+  pointer-events: none;
+}
+.sr-dialog {
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.45);
+  padding: 24px 20px;
+  min-width: 320px;
+  max-width: 90vw;
+  max-height: 80vh;
+  overflow-y: auto;
+  position: relative;
+  z-index: 2100;
+}
+.sr-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.sr-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: transparent;
+  z-index: 2001;
+}
+.sr-body {
+  margin-top: 8px;
+}
+#modalTableHost {
+  margin-top: 8px;
+}
+
+/* Custom BoCC marker icons for Leaflet map */
+.bocc-marker {
+  background: none !important;
+  border: none !important;
+  box-shadow: none !important;
+  padding: 0 !important;
+}
+
 

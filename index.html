@@ -170,14 +170,6 @@
         </div>
 
         <div class="card col-6">
-          <h2>BoCC status breakdown</h2>
-          <div class="chartbox h240">
-            <canvas id="chartBoccBreakdown"></canvas>
-          </div>
-          <div id="tableBoccBreakdown" class="data-table" hidden></div>
-        </div>
-
-        <div class="card col-6">
           <h2>Observations by month</h2>
           <div class="chartbox h220">
             <canvas id="chartMonths" aria-label="Observations by month"></canvas>
@@ -210,6 +202,23 @@
         </div>
 
         <div class="card col-12">
+          <h2>Species richness by month</h2>
+          <div class="chartbox h300">
+            <canvas id="chartRichness"></canvas>
+          </div>
+          <div id="tableRichness" class="data-table"></div>
+        </div>
+
+        <div class="card col-12">
+          <h2>Observations by classs per month (stacked)</h2>
+          <div class="chartbox h600">
+            <canvas id="chartClassMonthly"></canvas>
+          </div>
+          <div id="tableClassMonthly" class="data-table"></div>
+        </div>
+
+
+        <div class="card col-12">
           <h2>Top 10 data providers</h2>
           <div class="chartbox h240">
             <canvas id="chartProviders" aria-label="Top 10 data providers"></canvas>
@@ -217,21 +226,6 @@
           <div id="tableProviders" class="data-table" hidden></div>
         </div>
 
-        <div class="card col-12">
-          <h2>Observations by classs per month (stacked)</h2>
-          <div class="chartbox h300">
-            <canvas id="chartClassMonthly"></canvas>
-          </div>
-          <div id="tableClassMonthly" class="data-table"></div>
-        </div>
-
-        <div class="card col-12">
-          <h2>Species richness by month</h2>
-          <div class="chartbox h300">
-            <canvas id="chartRichness"></canvas>
-          </div>
-          <div id="tableRichness" class="data-table"></div>
-        </div>
         <div class="card col-12">
           <h2>Records by provider</h2>
           <div class="help">Expand a provider to see its records. Each record links to its NBN Atlas occurrence page.
@@ -335,19 +329,19 @@
     </section>
   </main>
 
-<!-- Modal overlay -->
-<div id="modal" aria-hidden="true" role="dialog" aria-modal="true">
-  <div class="sr-backdrop" data-close="1"></div>
-  <div class="sr-dialog" role="document">
-    <div class="sr-header">
-      <h2 id="modalTitle">Results</h2>
-      <button class="btn btn-icon" id="modalClose" aria-label="Close">✕</button>
-    </div>
-    <div class="sr-body">
-      <div id="modalTableHost"></div>
+  <!-- Modal overlay -->
+  <div id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+    <div class="sr-backdrop" data-close="1"></div>
+    <div class="sr-dialog" role="document">
+      <div class="sr-header">
+        <h2 id="modalTitle">Results</h2>
+        <button class="btn btn-icon" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div class="sr-body">
+        <div id="modalTableHost"></div>
+      </div>
     </div>
   </div>
-</div>
 
 
 </body>

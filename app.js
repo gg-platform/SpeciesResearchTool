@@ -1,25 +1,28 @@
+  
 /* ====== Utilities ===== */
-function googleLinkEl(text){
-  const a = document.createElement('a');
-  a.target = '_blank';
-  a.rel = 'noopener noreferrer';
-  a.href = 'https://www.google.com/search?q=' + encodeURIComponent(text);
+function googleLinkEl(text) {
+  const a = document.createElement("a");
+  a.target = "_blank";
+  a.rel = "noopener noreferrer";
+  a.href = "https://www.google.com/search?q=" + encodeURIComponent(text);
   a.textContent = text;
   return a;
 }
 
 // Normalise species strings for matching
-function normName(s){
+function normName(s) {
   return String(s || "")
-    .normalize("NFKD")          // strip accents
-    .replace(/[\u0300-\u036f]/g,"")
-    .replace(/\s+/g, " ")       // collapse spaces
+    .normalize("NFKD") // strip accents
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/\s+/g, " ") // collapse spaces
     .trim()
     .toLowerCase();
 }
 
 function licenseInfo(code) {
-  const c = String(code || "").toUpperCase().trim();
+  const c = String(code || "")
+    .toUpperCase()
+    .trim();
   switch (c) {
     case "CC0":
       return {
@@ -72,7 +75,11 @@ function renderAttribution(hostSel) {
 
   // Aggregate unique tuples (provider + dataset + licence)
   const key = (p, r, l) =>
-    [p || "(unknown provider)", r || "(unknown dataset)", (l || "").toUpperCase()].join("||");
+    [
+      p || "(unknown provider)",
+      r || "(unknown dataset)",
+      (l || "").toUpperCase(),
+    ].join("||");
   const seen = new Map();
 
   state.rows.forEach((r) => {
@@ -95,17 +102,18 @@ function renderAttribution(hostSel) {
   ul.className = "attr-list";
 
   Array.from(seen.values())
-    .sort((a, b) => a.provider.localeCompare(b.provider) || a.dataset.localeCompare(b.dataset))
+    .sort(
+      (a, b) =>
+        a.provider.localeCompare(b.provider) ||
+        a.dataset.localeCompare(b.dataset)
+    )
     .forEach(({ provider, dataset, license }) => {
       const li = document.createElement("li");
       const lic = licenseInfo(license);
 
       // Phrase attribution depending on licence
       // CC0: optional credit, others: required credit
-      const creditPrefix =
-        lic.code === "CC0"
-          ? "Uses data"
-          : "Contains data ©";
+      const creditPrefix = lic.code === "CC0" ? "Uses data" : "Contains data ©";
 
       const creditBody =
         lic.code === "CC0"
@@ -114,7 +122,9 @@ function renderAttribution(hostSel) {
 
       const licHtml =
         lic.href && lic.href !== "#"
-          ? `<a href="${lic.href}" target="_blank" rel="noopener">${escapeHtml(lic.label)}</a>`
+          ? `<a href="${lic.href}" target="_blank" rel="noopener">${escapeHtml(
+              lic.label
+            )}</a>`
           : escapeHtml(lic.label);
 
       li.innerHTML = `${creditPrefix} ${creditBody}, licensed under ${licHtml}. <span class="muted">${escapeHtml(
@@ -132,8 +142,6 @@ function renderAttribution(hostSel) {
   host.appendChild(ul);
   host.appendChild(note);
 }
-
-
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -180,18 +188,18 @@ function updateInfoBanners() {
   });
 }
 
-
- /* ====== Modal helpers ====== */
+/* ====== Modal helpers ====== */
 function openModalWithRows(title, rows) {
   const modal = $("#modal");
-  const host  = $("#modalTableHost");
+  const host = $("#modalTableHost");
   $("#modalTitle").textContent = title;
   host.innerHTML = "";
 
   // Build table
   const tbl = document.createElement("table");
   const thead = document.createElement("thead");
-  thead.innerHTML = "<tr><th>Name</th><th>Date</th><th>Provider</th><th>Dataset</th><th>Record</th></tr>";
+  thead.innerHTML =
+    "<tr><th>Name</th><th>Date</th><th>Provider</th><th>Dataset</th><th>Record</th></tr>";
   tbl.appendChild(thead);
 
   const tbody = document.createElement("tbody");
@@ -204,7 +212,7 @@ function openModalWithRows(title, rows) {
     tr.appendChild(td);
     tbody.appendChild(tr);
   } else {
-    rows.forEach(r => {
+    rows.forEach((r) => {
       const tr = document.createElement("tr");
 
       const nm = (r.vernacularName || r.scientificName || "(unknown)").trim();
@@ -224,7 +232,9 @@ function openModalWithRows(title, rows) {
       const tdRec = document.createElement("td");
       if (r.uuid) {
         const a = document.createElement("a");
-        a.href = `https://records.nbnatlas.org/occurrences/${encodeURIComponent(r.uuid)}`;
+        a.href = `https://records.nbnatlas.org/occurrences/${encodeURIComponent(
+          r.uuid
+        )}`;
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         a.textContent = "Open";
@@ -260,43 +270,49 @@ function closeModal() {
   });
 })();
 
-
 /* ====== Filters used by chart clicks ====== */
 // monthStr format: "YYYY-MM"
 function filterByMonth(monthStr) {
   const out = [];
-  state.rows.forEach(r => {
+  state.rows.forEach((r) => {
     const d = parseDateFromStrings(r.eventDateStr, r.occurrenceYearStr);
     if (!d) return;
-    if (d.toISOString().slice(0,7) === monthStr) out.push(r);
+    if (d.toISOString().slice(0, 7) === monthStr) out.push(r);
   });
   return out;
 }
 function filterBySpecies(name) {
   const target = normName(name);
-  return state.rows.filter(r =>
-    normName(r.vernacularName || "") === target || normName(r.scientificName || "") === target
-  );
+  return state.rows.filter((r) => {
+    const sci = (r.scientificName || "").trim();
+    const vern = (r.vernacularName || "").trim();
+    const n = sci || vern || "(unknown)";
+    return normName(n) === target;
+  });
 }
 function filterByClass(cls) {
   const t = (cls || "").trim().toLowerCase();
-  return state.rows.filter(r => (r.classs || "").trim().toLowerCase() === t);
+  return state.rows.filter((r) => (r.classs || "").trim().toLowerCase() === t);
 }
 function filterByBasis(basis) {
   const t = (basis || "").trim().toLowerCase();
-  return state.rows.filter(r => (r.basisOfRecord || "").trim().toLowerCase() === t);
+  return state.rows.filter(
+    (r) => (r.basisOfRecord || "").trim().toLowerCase() === t
+  );
 }
 function filterByProvider(provider) {
   const t = (provider || "").trim().toLowerCase();
-  return state.rows.filter(r => (r.provider || "").trim().toLowerCase() === t);
+  return state.rows.filter(
+    (r) => (r.provider || "").trim().toLowerCase() === t
+  );
 }
 function filterByMonthAndClass(monthStr, cls) {
   const t = (cls || "").trim().toLowerCase();
   const out = [];
-  state.rows.forEach(r => {
+  state.rows.forEach((r) => {
     const d = parseDateFromStrings(r.eventDateStr, r.occurrenceYearStr);
     if (!d) return;
-    if (d.toISOString().slice(0,7) !== monthStr) return;
+    if (d.toISOString().slice(0, 7) !== monthStr) return;
     if ((r.classs || "").trim().toLowerCase() !== t) return;
     out.push(r);
   });
@@ -308,33 +324,38 @@ function attachChartClick(chart, getTitleAndRowsForClick) {
   if (!canvas) return;
   canvas.style.cursor = "pointer";
   canvas.addEventListener("click", (evt) => {
-    const points = chart.getElementsAtEventForMode(evt, "nearest", { intersect: true }, true);
+    const points = chart.getElementsAtEventForMode(
+      evt,
+      "nearest",
+      { intersect: true },
+      true
+    );
     if (!points.length) return;
     const el = points[0];
     const dsIndex = el.datasetIndex;
     const i = el.index;
-    const { title, rows } = getTitleAndRowsForClick({ chart, dsIndex, index: i }) || {};
+    const { title, rows } =
+      getTitleAndRowsForClick({ chart, dsIndex, index: i }) || {};
     if (rows) openModalWithRows(title || "Results", rows);
   });
 }
 
-(function ensureModalWrapper(){
-  const dlg = document.querySelector('.sr-dialog');
-  const bd  = document.querySelector('.sr-backdrop');
-  const wrap = document.getElementById('modal');
+(function ensureModalWrapper() {
+  const dlg = document.querySelector(".sr-dialog");
+  const bd = document.querySelector(".sr-backdrop");
+  const wrap = document.getElementById("modal");
   if (dlg && bd && !wrap) {
-    const w = document.createElement('div');
-    w.id = 'modal';
-    w.setAttribute('aria-hidden','true');
-    w.setAttribute('role','dialog');
-    w.setAttribute('aria-modal','true');
+    const w = document.createElement("div");
+    w.id = "modal";
+    w.setAttribute("aria-hidden", "true");
+    w.setAttribute("role", "dialog");
+    w.setAttribute("aria-modal", "true");
     bd.parentNode.insertBefore(w, bd);
     w.appendChild(bd);
     w.appendChild(dlg);
     document.body.appendChild(w);
   }
 })();
-
 
 /* ====== State ====== */
 const state = {
@@ -362,7 +383,9 @@ function showTab(id) {
   if (id === "map") {
     ensureMap();
     setTimeout(() => {
-      try { state.map.invalidateSize(); } catch (e) {}
+      try {
+        state.map.invalidateSize();
+      } catch (e) {}
       // NEW: auto-render when entering the map tab if we have rows
       if (state.rows.length) renderMap();
     }, 0);
@@ -370,12 +393,13 @@ function showTab(id) {
 
   if (id === "overview") {
     if (Object.keys(state.charts).length) resizeAllCharts();
-    else if (state.rows.length) { buildOverview(); }
+    else if (state.rows.length) {
+      buildOverview();
+    }
   }
 
   updateInfoBanners();
 }
-
 
 function wireTabs() {
   $$(".tab").forEach((t) =>
@@ -431,7 +455,8 @@ async function fetchAll(url, statusCb) {
       startIndex += pageSize;
       pages++;
       statusCb?.(`Fetched page ${pages} (${out.length}/${total})`);
-      if (pages > maxPages) throw new Error(`Safety cap reached (${maxPages} pages)`);
+      if (pages > maxPages)
+        throw new Error(`Safety cap reached (${maxPages} pages)`);
     }
     statusCb?.(`Done. ${out.length} records.`);
     return out;
@@ -460,25 +485,36 @@ function toDateString(ms) {
   )}`;
 }
 function mapRows(occ) {
-  return occ.map((o) => ({
-    uuid: o.uuid || "",                       
-    occurrenceID: o.occurrenceID || "", 
-    vernacularName: o.vernacularName || "",
-    scientificName: o.scientificName || "",
-    classs: o.classs || "",
-    basisOfRecord: o.basisOfRecord || "",
-    provider: o.dataProviderName || "",
-    dataResourceName: o.dataResourceName || "",
-    license: (o.license || "").toUpperCase(),   // e.g. CC-BY, CC-BY-NC
-    eventDateStr: toDateString(o.eventDate),
-    occurrenceYearStr: toDateString(o.occurrenceYear),
-    lat: Number(o.decimalLatitude),
-    lon: Number(o.decimalLongitude),
-  }));
+  return occ.map((o) => {
+    const sci = (o.scientificName || "").trim();
+    const vern = (o.vernacularName || "").trim();
+    // Canonical key: normalized scientific name if present, else vernacular
+    const speciesKey = sci ? normName(sci) : normName(vern || "(unknown)");
+    // Display name: always vernacular if present, else scientific, else unknown
+    const speciesDisplay = vern || sci || "(unknown)";
+    return {
+      uuid: o.uuid || "",
+      occurrenceID: o.occurrenceID || "",
+      vernacularName: vern,
+      scientificName: sci,
+      classs: o.classs || "",
+      basisOfRecord: o.basisOfRecord || "",
+      provider: o.dataProviderName || "",
+      dataResourceName: o.dataResourceName || "",
+      license: (o.license || "").toUpperCase(),
+      eventDateStr: toDateString(o.eventDate),
+      occurrenceYearStr: toDateString(o.occurrenceYear),
+      lat: Number(o.decimalLatitude),
+      lon: Number(o.decimalLongitude),
+      speciesKey,
+      speciesDisplay
+    };
+  });
 }
 
 // If user is currently on the Map tab, render right away
-const current = $$(".tab").find(t => t.classList.contains("active"))?.dataset.target;
+const current = $$(".tab").find((t) => t.classList.contains("active"))?.dataset
+  .target;
 if (current === "map") {
   ensureMap();
   renderMap();
@@ -500,8 +536,12 @@ function renderTable(hostSel, headers, rows, linkColsByName = []) {
   // Map header names -> indexes for linkifying
   const linkIdx = new Set(
     linkColsByName
-      .map(name => headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase()))
-      .filter(i => i >= 0)
+      .map((name) =>
+        headers.findIndex(
+          (h) => String(h).toLowerCase() === String(name).toLowerCase()
+        )
+      )
+      .filter((i) => i >= 0)
   );
 
   const tbl = document.createElement("table");
@@ -556,7 +596,9 @@ function renderProviderRecordTables(hostSel) {
     byProvider.get(prov).push(r);
   });
 
-  const providers = Array.from(byProvider.keys()).sort((a, b) => a.localeCompare(b));
+  const providers = Array.from(byProvider.keys()).sort((a, b) =>
+    a.localeCompare(b)
+  );
 
   providers.forEach((prov) => {
     const rows = byProvider.get(prov) || [];
@@ -564,15 +606,23 @@ function renderProviderRecordTables(hostSel) {
     // Distinct (dataset, licence) for this provider (mini summary under summary)
     const dsLic = new Map();
     rows.forEach((r) => {
-      const k = `${r.dataResourceName || "(unknown dataset)"}||${r.license || ""}`;
-      if (!dsLic.has(k)) dsLic.set(k, { dataset: r.dataResourceName || "(unknown dataset)", license: r.license || "" });
+      const k = `${r.dataResourceName || "(unknown dataset)"}||${
+        r.license || ""
+      }`;
+      if (!dsLic.has(k))
+        dsLic.set(k, {
+          dataset: r.dataResourceName || "(unknown dataset)",
+          license: r.license || "",
+        });
     });
 
     const wrap = document.createElement("details");
     wrap.open = providers.length <= 3;
 
     const summary = document.createElement("summary");
-    summary.innerHTML = `${escapeHtml(prov)} <span class="muted">(${rows.length} records)</span>`;
+    summary.innerHTML = `${escapeHtml(prov)} <span class="muted">(${
+      rows.length
+    } records)</span>`;
     wrap.appendChild(summary);
 
     // Per-provider dataset/licence bullets
@@ -584,7 +634,9 @@ function renderProviderRecordTables(hostSel) {
       li.innerHTML =
         `<em>${escapeHtml(dataset)}</em> — ` +
         (lic.href && lic.href !== "#"
-          ? `<a target="_blank" rel="noopener" href="${lic.href}">${escapeHtml(lic.label)}</a>`
+          ? `<a target="_blank" rel="noopener" href="${lic.href}">${escapeHtml(
+              lic.label
+            )}</a>`
           : escapeHtml(lic.label));
       ul.appendChild(li);
     });
@@ -631,7 +683,9 @@ function renderProviderRecordTables(hostSel) {
       const tdLink = document.createElement("td");
       if (r.uuid) {
         const a = document.createElement("a");
-        a.href = `https://records.nbnatlas.org/occurrences/${encodeURIComponent(r.uuid)}`;
+        a.href = `https://records.nbnatlas.org/occurrences/${encodeURIComponent(
+          r.uuid
+        )}`;
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         a.textContent = "View record";
@@ -674,12 +728,16 @@ function renderProviderRecordTables(hostSel) {
 
   const tbl = document.createElement("table");
   const th = document.createElement("thead");
-  th.innerHTML = "<tr><th>Dataset</th><th>Licence</th><th>Providers</th><th>Records</th></tr>";
+  th.innerHTML =
+    "<tr><th>Dataset</th><th>Licence</th><th>Providers</th><th>Records</th></tr>";
   tbl.appendChild(th);
 
   const tb = document.createElement("tbody");
   Array.from(distinct.values())
-    .sort((a, b) => a.dataset.localeCompare(b.dataset) || a.license.localeCompare(b.license))
+    .sort(
+      (a, b) =>
+        a.dataset.localeCompare(b.dataset) || a.license.localeCompare(b.license)
+    )
     .forEach(({ dataset, license, providers, records }) => {
       const tr = document.createElement("tr");
 
@@ -714,7 +772,6 @@ function renderProviderRecordTables(hostSel) {
   host.appendChild(summaryWrap);
 }
 
-
 /* ====== Charts (Chart.js) ====== */
 function destroyCharts() {
   Object.values(state.charts).forEach((c) => c?.destroy());
@@ -723,6 +780,24 @@ function destroyCharts() {
 
 function buildOverview() {
   const rows = state.rows;
+  // BoCC breakdown chart
+  if (state.bocc && rows.length > 0) {
+    // Count records by BoCC status
+    const boccCounts = { "Red": 0, "Amber": 0, "Former breeding": 0, "Other": 0 };
+    rows.forEach((r) => {
+      let status = "Other";
+      const names = [r.vernacularName, r.scientificName].filter(Boolean);
+      for (const n of names) {
+        const key = normName(n);
+        const list = state.bocc.speciesToList[key];
+        if (list) {
+          status = list;
+          break;
+        }
+      }
+      boccCounts[status] = (boccCounts[status] || 0) + 1;
+    });
+    }
   $("#totalRecords").textContent = String(rows.length);
 
   // by month
@@ -736,15 +811,32 @@ function buildOverview() {
   const months = Object.keys(monthMap).sort();
   const monthCounts = months.map((m) => monthMap[m]);
 
-  // top species
+  // Top species (group by speciesKey, display speciesDisplay)
   const spMap = {};
+  const spDisplay = {};
+  const spBoccStatus = {};
   rows.forEach((r) => {
-    const n = (r.vernacularName || r.scientificName || "(unknown)").trim();
-    spMap[n] = (spMap[n] || 0) + 1;
+    const key = r.speciesKey;
+    spMap[key] = (spMap[key] || 0) + 1;
+    spDisplay[key] = r.speciesDisplay;
+    // Determine BoCC status for this species
+    let boccStatus = null;
+    if (state.bocc) {
+      const names = [r.scientificName, r.vernacularName].filter(Boolean);
+      for (const name of names) {
+        const nkey = normName(name);
+        const list = state.bocc.speciesToList[nkey];
+        if (list) {
+          boccStatus = list;
+          break;
+        }
+      }
+    }
+    spBoccStatus[key] = boccStatus;
   });
   const spTop = Object.entries(spMap)
-    .map(([k, v]) => ({ k, v }))
-    .sort((a, b) => b.v - a.v || a.k.localeCompare(b.k))
+    .map(([key, v]) => ({ key, display: spDisplay[key], v }))
+    .sort((a, b) => b.v - a.v || a.display.localeCompare(b.display))
     .slice(0, 10);
 
   // by class
@@ -816,7 +908,7 @@ function buildOverview() {
       data: { labels, datasets: [{ label: "Count", data }] },
       options: {
         responsive: true,
-        maintainAspectRatio: false, 
+        maintainAspectRatio: false,
         plugins: { legend: { display: false } },
         scales: {
           x: { ticks: { color: "#cfe4d6" } },
@@ -825,18 +917,46 @@ function buildOverview() {
       },
     });
   destroyCharts();
-    // Months (line)
+  // Months (line)
   state.charts.months = mk($("#chartMonths"), "line", months, monthCounts);
   attachChartClick(state.charts.months, ({ index }) => {
     const monthStr = months[index];
     return { title: `Records in ${monthStr}`, rows: filterByMonth(monthStr) };
   });
 
-  // Species (bar)
-  state.charts.species = mk($("#chartSpecies"), "bar", spTop.map(x=>x.k), spTop.map(x=>x.v));
+  // Species (bar) with BoCC status colors
+  const boccColorMap = {
+    "Red": "#e37a6b",
+    "Amber": "#e7b552",
+    "Former breeding": "#9fb3a8",
+    "default": "#6bb187"
+  };
+  state.charts.species = new Chart($("#chartSpecies"), {
+    type: "bar",
+    data: {
+      labels: spTop.map((x) => x.display),
+      datasets: [{
+        label: "Count",
+        data: spTop.map((x) => x.v),
+        backgroundColor: spTop.map((x) => {
+          const status = spBoccStatus[x.key] || "default";
+          return boccColorMap[status] || boccColorMap["default"];
+        })
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { ticks: { color: "#cfe4d6" } },
+        y: { ticks: { color: "#cfe4d6" } },
+      },
+    },
+  });
   attachChartClick(state.charts.species, ({ index }) => {
-    const name = spTop[index]?.k;
-    return { title: `Records for ${name}`, rows: filterBySpecies(name) };
+    const display = spTop[index]?.display;
+    return { title: `Records for ${display}`, rows: filterBySpecies(display) };
   });
 
   // Class (bar)
@@ -854,18 +974,34 @@ function buildOverview() {
   });
   attachChartClick(state.charts.basis, ({ index }) => {
     const label = bsLabels[index];
-    return { title: `Records with basis: ${label}`, rows: filterByBasis(label) };
+    return {
+      title: `Records with basis: ${label}`,
+      rows: filterByBasis(label),
+    };
   });
 
   // Providers (bar)
-  state.charts.providers = mk($("#chartProviders"), "bar", pvTop.map(x=>x.k), pvTop.map(x=>x.v));
+  state.charts.providers = mk(
+    $("#chartProviders"),
+    "bar",
+    pvTop.map((x) => x.k),
+    pvTop.map((x) => x.v)
+  );
   attachChartClick(state.charts.providers, ({ index }) => {
     const prov = pvTop[index]?.k;
-    return { title: `Records from provider: ${prov}`, rows: filterByProvider(prov) };
+    return {
+      title: `Records from provider: ${prov}`,
+      rows: filterByProvider(prov),
+    };
   });
 
   // Richness (line) -> click shows month’s records
-  state.charts.richness = mk($("#chartRichness"), "line", rMonths, richnessCounts);
+  state.charts.richness = mk(
+    $("#chartRichness"),
+    "line",
+    rMonths,
+    richnessCounts
+  );
   attachChartClick(state.charts.richness, ({ index }) => {
     const monthStr = rMonths[index];
     return { title: `Records in ${monthStr}`, rows: filterByMonth(monthStr) };
@@ -889,7 +1025,10 @@ function buildOverview() {
   attachChartClick(state.charts.classMonthly, ({ dsIndex, index }) => {
     const monthStr = mcMonths[index];
     const cls = mcDatasets[dsIndex]?.label;
-    return { title: `Records in ${monthStr} — ${cls}`, rows: filterByMonthAndClass(monthStr, cls) };
+    return {
+      title: `Records in ${monthStr} — ${cls}`,
+      rows: filterByMonthAndClass(monthStr, cls),
+    };
   });
 
   // Render or hide data tables under each chart
@@ -898,12 +1037,12 @@ function buildOverview() {
     ["Month", "Count"],
     months.map((m, i) => [m, String(monthCounts[i])])
   );
-renderTable(
-  "#tableSpecies",
-  ["Species", "Count"],
-  spTop.map((x) => [x.k, String(x.v)]),
-  ["Species"]  // <- linkify this column
-);
+  renderTable(
+    "#tableSpecies",
+    ["Species", "Count"],
+    spTop.map((x) => [x.display, String(x.v)]),
+    ["Species"] // <- linkify this column
+  );
 
   renderTable(
     "#tableClass",
@@ -932,7 +1071,7 @@ renderTable(
   ]);
   renderTable("#tableClassMonthly", ["Month", ...mcClasses], classMonthlyRows);
   setTablesVisible(state.showTables);
-  resizeAllCharts();   
+  resizeAllCharts();
 }
 
 function setTablesVisible(show) {
@@ -962,8 +1101,8 @@ async function loadBoccJson() {
   const j = await res.json();
 
   const listToSpecies = {};
-  const speciesToList = {};        // normName(species) -> List
-  const speciesLowerToName = {};   // normName(species) -> original display name
+  const speciesToList = {}; // normName(species) -> List
+  const speciesLowerToName = {}; // normName(species) -> original display name
   const lists = [];
 
   (j.lists || []).forEach((entry) => {
@@ -983,7 +1122,6 @@ async function loadBoccJson() {
 
   state.bocc = { listToSpecies, speciesToList, speciesLowerToName, lists };
 }
-
 
 /* ====== BoCC Analysis & Reference ====== */
 function buildBoccReference() {
@@ -1019,35 +1157,40 @@ function buildBoccReference() {
   host.appendChild(table);
 }
 
-
 function buildBoccAnalysis() {
-  const redHost      = $("#boccRed .tbl");
-  const amberHost    = $("#boccAmber .tbl");
-  const formerHost   = $("#boccFormer .tbl");
+  const redHost = $("#boccRed .tbl");
+  const amberHost = $("#boccAmber .tbl");
+  const formerHost = $("#boccFormer .tbl");
   // const byClassHost  = $("#boccByClass .tbl");
   const distinctHost = $("#boccDistinct .tbl");
 
-  [redHost, amberHost, formerHost, distinctHost].forEach(h => { if (h) h.innerHTML = ""; });
+  [redHost, amberHost, formerHost, distinctHost].forEach((h) => {
+    if (h) h.innerHTML = "";
+  });
 
   if (!state.bocc) {
     // if (byClassHost)   byClassHost.innerHTML   = '<div class="muted">BoCC reference not loaded.</div>';
-    if (distinctHost)  distinctHost.innerHTML  = '<div class="muted">BoCC reference not loaded.</div>';
+    if (distinctHost)
+      distinctHost.innerHTML =
+        '<div class="muted">BoCC reference not loaded.</div>';
     return;
   }
 
   // Totals
-  const occCount = Object.create(null);   // normName(species) -> occurrence count
-  const classOccByList = {};              // list -> class -> total occurrences
-  const distinctByListClass = {};         // list -> class -> Set(canonical species names)
+  const occCount = Object.create(null); // normName(species) -> occurrence count
+  const classOccByList = {}; // list -> class -> total occurrences
+  const distinctByListClass = {}; // list -> class -> Set(canonical species names)
 
   const ensure = (obj, key, def) => (obj[key] ??= def);
   const safeClass = (c) => (c || "(unknown)").trim();
 
-  state.rows.forEach(r => {
+  state.rows.forEach((r) => {
     const cls = safeClass(r.classs);
-    const names = [r.vernacularName, r.scientificName].filter(Boolean).map(s => s.trim());
-    names.forEach(n => {
-      const key  = normName(n);                        // ✅ use normalized key
+    const names = [r.vernacularName, r.scientificName]
+      .filter(Boolean)
+      .map((s) => s.trim());
+    names.forEach((n) => {
+      const key = normName(n); // ✅ use normalized key
       const list = state.bocc.speciesToList[key];
       if (!list) return;
 
@@ -1061,24 +1204,26 @@ function buildBoccAnalysis() {
     });
   });
 
-  const lists = ["Red", "Amber", "Former breeding"].filter(L => state.bocc.lists.includes(L));
+  const lists = ["Red", "Amber", "Former breeding"].filter((L) =>
+    state.bocc.lists.includes(L)
+  );
 
   // Species tables + counts in H2
   function renderSpeciesTable(listName, host, headingSel) {
     const spec = state.bocc.listToSpecies[listName] || [];
     const rows = spec
-      .map(s => {
-        const key = normName(s.name);                  // ✅ normalized lookup
+      .map((s) => {
+        const key = normName(s.name); // ✅ normalized lookup
         const count = occCount[key] || 0;
         return { name: s.name, annotation: s.annotation || "", count };
       })
-      .filter(r => r.count > 0)
+      .filter((r) => r.count > 0)
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
     renderTableEl(
       host,
       ["Species", "Annotation", "Occurrences"],
-      rows.map(r => [r.name, r.annotation, String(r.count)]),
+      rows.map((r) => [r.name, r.annotation, String(r.count)]),
       ["Species"]
     );
 
@@ -1089,9 +1234,9 @@ function buildBoccAnalysis() {
     }
   }
 
-  renderSpeciesTable("Red",            redHost,    "#boccRed h2");
-  renderSpeciesTable("Amber",          amberHost,  "#boccAmber h2");
-  renderSpeciesTable("Former breeding",formerHost, "#boccFormer h2");
+  renderSpeciesTable("Red", redHost, "#boccRed h2");
+  renderSpeciesTable("Amber", amberHost, "#boccAmber h2");
+  renderSpeciesTable("Former breeding", formerHost, "#boccFormer h2");
 
   // // Occurrences by classs
   // const classSetOcc = new Set();
@@ -1107,23 +1252,44 @@ function buildBoccAnalysis() {
 
   // Distinct species by classs (counts of unique species)
   const classSetDistinct = new Set();
-  lists.forEach(L => Object.keys(distinctByListClass[L] || {}).forEach(c => classSetDistinct.add(c)));
-  const classColsDistinct = Array.from(classSetDistinct).sort((a,b)=>a.localeCompare(b));
+  lists.forEach((L) =>
+    Object.keys(distinctByListClass[L] || {}).forEach((c) =>
+      classSetDistinct.add(c)
+    )
+  );
+  const classColsDistinct = Array.from(classSetDistinct).sort((a, b) =>
+    a.localeCompare(b)
+  );
 
-  const bodyDistinct = lists.map(L => {
+  const bodyDistinct = lists.map((L) => {
     const rowObj = distinctByListClass[L] || {};
-    const totalDistinct = classColsDistinct.reduce((a,c) => a + ((rowObj[c]?.size) || 0), 0);
-    return [L, String(totalDistinct), ...classColsDistinct.map(c => String((rowObj[c]?.size) || 0))];
+    const totalDistinct = classColsDistinct.reduce(
+      (a, c) => a + (rowObj[c]?.size || 0),
+      0
+    );
+    return [
+      L,
+      String(totalDistinct),
+      ...classColsDistinct.map((c) => String(rowObj[c]?.size || 0)),
+    ];
   });
-  renderTableEl(distinctHost, ["List", "Distinct total", ...classColsDistinct], bodyDistinct);
+  renderTableEl(
+    distinctHost,
+    ["List", "Distinct total", ...classColsDistinct],
+    bodyDistinct
+  );
 
   // table builder
   function renderTableEl(hostDiv, headers, rows, linkColsByName = []) {
     if (!hostDiv) return;
     const linkIdx = new Set(
       linkColsByName
-        .map(name => headers.findIndex(h => String(h).toLowerCase() === String(name).toLowerCase()))
-        .filter(i => i >= 0)
+        .map((name) =>
+          headers.findIndex(
+            (h) => String(h).toLowerCase() === String(name).toLowerCase()
+          )
+        )
+        .filter((i) => i >= 0)
     );
 
     const tbl = document.createElement("table");
@@ -1139,7 +1305,7 @@ function buildBoccAnalysis() {
       trr.appendChild(td);
       tbody.appendChild(trr);
     } else {
-      rows.forEach(r => tbody.appendChild(tr(r, false)));
+      rows.forEach((r) => tbody.appendChild(tr(r, false)));
     }
 
     tbl.append(thead, tbody);
@@ -1160,9 +1326,6 @@ function buildBoccAnalysis() {
     }
   }
 }
-
-
-
 
 /* ====== Map (Leaflet) ====== */
 function ensureMap() {
@@ -1190,6 +1353,19 @@ function renderMap() {
     const r = state.rows[i];
     if (!Number.isFinite(r.lat) || !Number.isFinite(r.lon)) continue;
     if (r.lat < -90 || r.lat > 90 || r.lon < -180 || r.lon > 180) continue;
+    // Determine BoCC status
+    let boccStatus = null;
+    if (state.bocc) {
+      const names = [r.vernacularName, r.scientificName].filter(Boolean);
+      for (const n of names) {
+        const key = normName(n);
+        const list = state.bocc.speciesToList[key];
+        if (list) {
+          boccStatus = list;
+          break;
+        }
+      }
+    }
     pts.push({
       lat: r.lat,
       lon: r.lon,
@@ -1198,22 +1374,45 @@ function renderMap() {
       cls: r.classs || "(unknown)",
       date: r.eventDateStr || "",
       provider: r.provider || "",
+      boccStatus,
     });
   }
   state.cluster.clearLayers();
   if (!pts.length) return;
   const markers = [],
     bounds = [];
+  // Custom marker colors for BoCC status
+  function getMarkerOptions(status) {
+    // Use colored SVG icons for clarity
+    let color = "#6bb187"; // default green
+    if (status === "Red") color = "#e37a6b";
+    else if (status === "Amber") color = "#e7b552";
+    else if (status === "Former breeding") color = "#9fb3a8";
+    // SVG circle marker
+    return {
+      icon: L.divIcon({
+        className: "bocc-marker",
+        html: `<svg width='22' height='22' viewBox='0 0 22 22' style='display:block'><circle cx='11' cy='11' r='8' fill='${color}' stroke='#203126' stroke-width='2'/></svg>`
+      }),
+      iconSize: [22, 22],
+      iconAnchor: [11, 11],
+      popupAnchor: [0, -11],
+    };
+  }
   pts.forEach((p) => {
-    const m = L.marker([p.lat, p.lon]);
-   m.bindPopup(
-  `<strong><a href="https://www.google.com/search?q=${encodeURIComponent(p.name)}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.name)}</a></strong>` +
-  (p.sci ? `<div><em>${escapeHtml(p.sci)}</em></div>` : "") +
-  `<div>Class: ${escapeHtml(p.cls)}</div>` +
-  `<div>Date: ${escapeHtml(p.date)}</div>` +
-  `<div>Provider: ${escapeHtml(p.provider)}</div>`
-);
-
+    const m = L.marker([p.lat, p.lon], getMarkerOptions(p.boccStatus));
+    m.bindPopup(
+      `<strong><a href="https://www.google.com/search?q=${encodeURIComponent(
+        p.name
+      )}" target="_blank" rel="noopener noreferrer">${escapeHtml(
+        p.name
+      )}</a></strong>` +
+        (p.sci ? `<div><em>${escapeHtml(p.sci)}</em></div>` : "") +
+        `<div>Class: ${escapeHtml(p.cls)}</div>` +
+        `<div>Date: ${escapeHtml(p.date)}</div>` +
+        `<div>Provider: ${escapeHtml(p.provider)}</div>` +
+        (p.boccStatus ? `<div><b>BoCC status:</b> ${escapeHtml(p.boccStatus)}</div>` : "")
+    );
     markers.push(m);
     bounds.push([p.lat, p.lon]);
   });
@@ -1233,7 +1432,6 @@ function rebuildAll() {
       buildBoccAnalysis();
       buildBoccReference();
     }
-
   } else {
     // Clear Overview tables if no data
     [
@@ -1244,15 +1442,13 @@ function rebuildAll() {
       "#tableProviders",
       "#tableRichness",
       "#tableClassMonthly",
-      '#tableProviderRecords',
+      "#tableProviderRecords",
     ].forEach((sel) => {
       const el = $(sel);
       if (el) el.innerHTML = "";
     });
-    
   }
 }
-
 
 /* ====== Event wiring ====== */
 function wireControls() {
@@ -1303,7 +1499,7 @@ function wireControls() {
 }
 
 // ---- Post height to parent (Wix) so the iframe can auto-resize ----
-(function initAutoHeightMessaging(){
+(function initAutoHeightMessaging() {
   const post = () => {
     // total document height
     const h = Math.max(
@@ -1311,28 +1507,24 @@ function wireControls() {
       document.body?.scrollHeight || 0
     );
     // Tell any parent listening (Wix) our height
-    window.parent?.postMessage({ type: 'APP_HEIGHT', height: h }, '*');
+    window.parent?.postMessage({ type: "APP_HEIGHT", height: h }, "*");
   };
 
   // Post on load and after layout changes
-  window.addEventListener('load', post);
+  window.addEventListener("load", post);
   // Observe body size changes (charts/tables/map)
-  if ('ResizeObserver' in window) {
+  if ("ResizeObserver" in window) {
     const ro = new ResizeObserver(() => post());
     ro.observe(document.body);
   }
   // Also post on navigation/tab changes & window resizes
-  window.addEventListener('resize', () => setTimeout(post, 0));
+  window.addEventListener("resize", () => setTimeout(post, 0));
 
   // Expose a manual trigger if parent asks
-  window.addEventListener('message', (ev) => {
-    if (ev?.data?.type === 'REQUEST_HEIGHT') post();
+  window.addEventListener("message", (ev) => {
+    if (ev?.data?.type === "REQUEST_HEIGHT") post();
   });
 })();
-
-
-
-
 
 /* ====== Init ====== */
 (async function init() {
@@ -1352,4 +1544,3 @@ function wireControls() {
   }
   updateInfoBanners(); // shows blank until first fetch
 })();
-
