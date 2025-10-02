@@ -15,7 +15,7 @@
 - User pastes an NBN Atlas API URL; app fetches JSON occurrence records in paginated batches (500 per page, up to ~200,000 records).
 - Records are normalized and stored in a global `state` object.
 - Data is visualized in charts (Chart.js) and a map (Leaflet + MarkerCluster).
-- BoCC analysis cross-references fetched bird species with `bocc.json`.
+- BoCC analysis cross-references fetched bird species with `bocc.json`, using the `scientific` field for matching and displaying the common name (`name`).
 
 ## Developer Workflows
 - **No build step required**: All code is plain JS/HTML/CSS, loaded directly in browser.
@@ -28,7 +28,7 @@
 - Data tables and charts are dynamically generated from the fetched data; no static markup for results.
 - All links to species names use Google search for quick lookup.
 - License attribution for datasets is handled via the `licenseInfo` and `renderAttribution` functions in `app.js`.
-- BoCC analysis uses normalized species names for matching (see `normName`).
+- BoCC analysis uses normalized scientific names for matching (see `normName` applied to the `scientific` field in `bocc.json`). All BoCC tables and modals display the common name (`name`) for user clarity.
 - Map rendering is triggered automatically when switching to the Map tab if data is present.
 - No persistent storage; all data is lost on page reload.
 
@@ -44,7 +44,7 @@
 
 ## Example: Extending BoCC Analysis
 - Update `bocc.json` with new species or lists.
-- Adjust BoCC logic in `buildBoccAnalysis()` and `loadBoccJson()` in `app.js`.
+- Adjust BoCC logic in `buildBoccAnalysis()` and `loadBoccJson()` in `app.js`. Ensure all matching uses the `scientific` field from `bocc.json` and all display uses the common name (`name`).
 
 ---
 

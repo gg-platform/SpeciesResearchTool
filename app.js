@@ -1155,13 +1155,14 @@ async function loadBoccJson() {
     lists.push(L);
     listToSpecies[L] = (entry.species || []).map((s) => ({
       name: s.name,
+      scientific: s.scientific || "",
       annotation: s.annotation || "",
     }));
     (entry.species || []).forEach((s) => {
-      if (!s?.name) return;
-      const key = normName(s.name);
+      if (!s?.scientific) return;
+      const key = normName(s.scientific);
       speciesToList[key] = L;
-      speciesLowerToName[key] = s.name; // keep original spelling for display
+      speciesLowerToName[key] = s.name; // display common name
     });
   });
 
@@ -1258,9 +1259,9 @@ function buildBoccAnalysis() {
     const spec = state.bocc.listToSpecies[listName] || [];
     const rows = spec
       .map((s) => {
-        const key = normName(s.name); // ✅ normalized lookup
+        const key = normName(s.scientific);
         const count = occCount[key] || 0;
-        return { name: s.name, annotation: s.annotation || "", count };
+        return { name: s.name, annotation: s.annotation || "", scientific: s.scientific, count };
       })
       .filter((r) => r.count > 0)
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
@@ -1295,9 +1296,10 @@ function buildBoccAnalysis() {
             btn.textContent = cell;
             btn.addEventListener("click", (e) => {
               e.stopPropagation();
-              const species = cell;
-              const rowsToShow = state.rows.filter(r => normName(r.vernacularName) === normName(species) || normName(r.scientificName) === normName(species));
-              openModalWithRows(`Records for BoCC species: ${species}`, rowsToShow);
+              // Use scientific name for matching
+              const scientific = rows.find(r => r.name === cell)?.scientific;
+              const rowsToShow = state.rows.filter(r => normName(r.scientificName) === normName(scientific));
+              openModalWithRows(`Records for BoCC species: ${cell}`, rowsToShow);
             });
             el.appendChild(btn);
           } else {
@@ -1311,7 +1313,7 @@ function buildBoccAnalysis() {
     renderBoccTable(
       host,
       ["Species", "Annotation", "Occurrences"],
-      rows.map((r) => [r.name, r.annotation, String(r.count)])
+      rows.map((r) => [r.name, r.annotation, String(r.count), r.scientific])
     );
 
     const h2 = $(headingSel);
