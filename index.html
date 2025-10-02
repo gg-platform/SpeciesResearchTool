@@ -38,19 +38,17 @@
       <button class="btn" data-goto="bocc">Resutls - BoCC Analysis</button>
       <button class="btn" data-goto="map">Results - Map</button>
       <button class="btn" data-goto="boccRef">Reference</button>
-
     </nav>
   </header>
 
   <main class="container">
-    <div class="tabs">
+    <!-- <div class="tabs">
       <span class="tab active" data-target="home">Home</span>
       <span class="tab" data-target="overview">Results - overview</span>
       <span class="tab" data-target="bocc">Results - BoCC Analysis</span>
       <span class="tab" data-target="map">Results - Map</span>
       <span class="tab" data-target="boccRef">Reference</span>
-
-    </div>
+    </div> -->
 
     <!-- HOME -->
     <section id="home">
@@ -92,7 +90,7 @@
               <b>Birds of Conservation Concern (BoCC) Analysis</b> matches results to the BoCC reference with three easy
               tables (Red/Amber/Former breeding) and a classs breakdown.
             </li>
-            <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
+            <li><b>BoCC Reference</b> displays the full reference list.</code>.</li>
             <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
             <li>We've left an example link in the search box so you can check out how results appear.</li>
           </ul>
@@ -242,7 +240,7 @@
         <div class="card col-12">
           <div class="titlebar">
             <h1>Birds of Conservation Concern (BoCC) analysis</h1>
-            <div class="muted">Matches your results to the reference list in <code data-goto="boccRef">bocc.json</code>
+            <div class="muted">Matches your results to the reference list.
             </div>
           </div>
           <!-- Info banner -->
@@ -291,7 +289,7 @@
         <div class="card col-12">
           <div class="titlebar">
             <h1>Birds of Conservation Concern reference</h1>
-            <div class="muted">Sourced from <code>bocc.json</code></div>
+            <div class="muted">This is an offline copy sourced from <a href ="https://www.bto.org/our-work/science/publications/reports/birds-conservation-concern">BTO - BoCC 5</a></div>
           </div>
           <div id="boccRefTable"></div>
         </div>

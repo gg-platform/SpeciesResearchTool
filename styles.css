@@ -37,7 +37,7 @@ body {
   background: var(--bg);
   color: var(--text);
   font: 14px/1.5 "Segoe UI", Roboto, system-ui, -apple-system, Arial, sans-serif;
-  overflow-x: hidden; overflow-y: visible; 
+  /* overflow-x: hidden; overflow-y: visible;  */
 }
 
 
@@ -56,12 +56,14 @@ a:hover {
   align-items: center;
   justify-content: space-between;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.3);
-  position: -webkit-sticky; /* iOS Safari */
   position: sticky;
   top: 0;
-  z-index: 1000;   
-  z-index: 10;
+  left: 0;
+  right: 0;
+  min-height: 56px;
+  z-index: 2000;
 }
+
 
 
 .logo {
@@ -118,7 +120,7 @@ a:hover {
 .card + .card{ margin-top:16px; } /* fallback if cards are stacked outside grid */
 
 /* Titlebar bottom spacing so next card doesn't touch it */
-.titlebar{ margin-bottom:8px; }
+.titlebar{ margin-bottom:8px;margin-top:8px;;}
 
 /* Make sure inner “table-scroll”/“tbl” blocks don’t remove spacing */
 .tbl, .table-scroll{ margin-top:8px; }
