@@ -543,13 +543,13 @@ function buildBoccAnalysis() {
   const redHost      = $("#boccRed .tbl");
   const amberHost    = $("#boccAmber .tbl");
   const formerHost   = $("#boccFormer .tbl");
-  const byClassHost  = $("#boccByClass .tbl");
+  // const byClassHost  = $("#boccByClass .tbl");
   const distinctHost = $("#boccDistinct .tbl");
 
-  [redHost, amberHost, formerHost, byClassHost, distinctHost].forEach(h => { if (h) h.innerHTML = ""; });
+  [redHost, amberHost, formerHost, distinctHost].forEach(h => { if (h) h.innerHTML = ""; });
 
   if (!state.bocc) {
-    if (byClassHost)   byClassHost.innerHTML   = '<div class="muted">BoCC reference not loaded.</div>';
+    // if (byClassHost)   byClassHost.innerHTML   = '<div class="muted">BoCC reference not loaded.</div>';
     if (distinctHost)  distinctHost.innerHTML  = '<div class="muted">BoCC reference not loaded.</div>';
     return;
   }
@@ -612,17 +612,17 @@ function buildBoccAnalysis() {
   renderSpeciesTable("Amber",          amberHost,  "#boccAmber h2");
   renderSpeciesTable("Former breeding",formerHost, "#boccFormer h2");
 
-  // Occurrences by classs
-  const classSetOcc = new Set();
-  lists.forEach(L => Object.keys(classOccByList[L] || {}).forEach(c => classSetOcc.add(c)));
-  const classColsOcc = Array.from(classSetOcc).sort((a,b)=>a.localeCompare(b));
+  // // Occurrences by classs
+  // const classSetOcc = new Set();
+  // lists.forEach(L => Object.keys(classOccByList[L] || {}).forEach(c => classSetOcc.add(c)));
+  // const classColsOcc = Array.from(classSetOcc).sort((a,b)=>a.localeCompare(b));
 
-  const bodyOcc = lists.map(L => {
-    const cc = classOccByList[L] || {};
-    const total = classColsOcc.reduce((a,c)=> a + (cc[c] || 0), 0);
-    return [L, String(total), ...classColsOcc.map(c => String(cc[c] || 0))];
-  });
-  renderTableEl(byClassHost, ["List", "Total", ...classColsOcc], bodyOcc);
+  // const bodyOcc = lists.map(L => {
+  //   const cc = classOccByList[L] || {};
+  //   const total = classColsOcc.reduce((a,c)=> a + (cc[c] || 0), 0);
+  //   return [L, String(total), ...classColsOcc.map(c => String(cc[c] || 0))];
+  // });
+  // renderTableEl(byClassHost, ["List", "Total", ...classColsOcc], bodyOcc);
 
   // Distinct species by classs (counts of unique species)
   const classSetDistinct = new Set();

@@ -104,19 +104,21 @@
 
           <div class="card col-4">
             <h2>Fetch data</h2>
-            <label for="apiUrl" class="help">Paste your NBN Atlas Occurrences API URL here</label>
+            <label for="apiUrl" class="help">Paste your NBN Atlas Occurrences API URL in th box below:</label>
             <input id="apiUrl" type="text" placeholder="Paste the NBN Atlas Occurrences API URL here" value="https://records-ws.nbnatlas.org/occurrences/search?q=*%3A*&fq=-occurrence_status%3A%22absent%22&lat=51.49289&lon=-2.5478497&radius=0.4" />
-            <div class="row" style="margin-top: 8px">
+            <div class="row">
               <button id="btnFetch" class="btn primary">Fetch</button>
               <button id="btnCancel" class="btn" disabled>Cancel</button>
             </div>
-            <div id="status" class="muted" style="margin-top: 8px">Idle.</div>
+            <div id="status" class="muted">Idle.</div>
 
-            <hr style="border-color: var(--border); margin: 12px 0" />
+            <hr  />
             <h2>Tips</h2>
-            <ul class="muted" style="margin: 0 0 0 18px">
+            <ul class="muted" >
               <li>You can refetch anytime with a different area or filters.</li>
               <li>Large areas return many records — progress appears above, you will be redirected to the results once all data is fetched.</li>
+              <li>To give it a go - click 'fetch' to view results from a NBN search we've already done for an area of Stoke Park, Bristol.</li>
+
             </ul>
           </div>
         </div>
@@ -129,15 +131,15 @@
             <div class="titlebar">
               <h1>Overview</h1>
               <div class="row">
-                <span class="chip">Total records: <b id="totalRecords">–</b></span>
+                <span class="chip">Total records: <b id="totalRecords">-</b></span>
                 <button id="btnToggleTables" class="btn">Show data tables</button>
               </div>
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_overview" href="#" target="_blank" rel="noopener">–</a></span>
+              <span class="src">Source: <a id="infoSrc_overview" href="#" target="_blank" rel="noopener">-</a></span>
               <span class="sep">·</span>
-              <span class="time">Fetched: <span id="infoTime_overview">–</span></span>
+              <span class="time">Fetched: <span id="infoTime_overview">-</span></span>
             </div>
           </div>
 
@@ -181,20 +183,20 @@
             <div id="tableProviders" class="data-table" hidden></div>
           </div>
 
-          <div class="card col-6">
-            <h2>Species richness by month</h2>
-            <div class="chartbox h220">
-              <canvas id="chartRichness" aria-label="Species richness by month"></canvas>
+          <div class="card col-12">
+            <h2>Observations by classs per month (stacked)</h2>
+            <div class="chartbox h300">
+              <canvas id="chartClassMonthly"></canvas>
             </div>
-            <div id="tableRichness" class="data-table" hidden></div>
+            <div id="tableClassMonthly" class="data-table"></div>
           </div>
 
-          <div class="card col-6">
-            <h2>Observations by classs per month (stacked)</h2>
-            <div class="chartbox h220">
-              <canvas id="chartClassMonthly" aria-label="Observations by classs per month"></canvas>
+          <div class="card col-12">
+            <h2>Species richness by month</h2>
+            <div class="chartbox h300">
+              <canvas id="chartRichness"></canvas>
             </div>
-            <div id="tableClassMonthly" class="data-table" hidden></div>
+            <div id="tableRichness" class="data-table"></div>
           </div>
         </div>
       </section>
@@ -209,23 +211,23 @@
             </div>
             <!-- Info banner -->
             <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">–</a></span>
+              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">-</a></span>
               <span class="sep">·</span>
-              <span class="time">Fetched: <span id="infoTime_bocc">–</span></span>
+              <span class="time">Fetched: <span id="infoTime_bocc">-</span></span>
             </div>
           </div>
 
           <!-- Distinct species per list & class -->
           <div id="boccDistinct" class="card col-12">
-            <h2>Distinct BoCC species by classs</h2>
+            <h2>Count of unique Birds of Conservation Concern (BoCC) species found</h2>
             <div class="tbl"></div>
           </div>
 
-          <!-- Class breakdown -->
+          <!-- Class breakdown
           <div id="boccByClass" class="card col-12">
             <h2>BoCC occurrences by classs</h2>
             <div class="tbl"></div>
-          </div>
+          </div> -->
 
           <!-- Matched species tables -->
           <div id="boccRed" class="card col-12">
@@ -269,7 +271,7 @@
               <h1>Map</h1>
               <div class="row">
                 <label class="help">Max points:
-                  <input id="maxPoints" type="number" min="100" max="20000" step="100" value="5000" style="width: 90px" />
+                  <input id="maxPoints" class="input-number" type="number" min="100" max="20000" step="100" value="5000" />
                 </label>
                 <button id="btnRenderMap" class="btn">Render</button>
               </div>
@@ -278,7 +280,7 @@
             <div class="infobar" aria-live="polite">
               <span class="src">Source: <a id="infoSrc_map" href="#" target="_blank" rel="noopener">–</a></span>
               <span class="sep">·</span>
-              <span class="time">Fetched: <span id="infoTime_map">–</span></span>
+              <span class="time">Fetched: <span id="infoTime_map">-</span></span>
             </div>
             <div id="mapCanvas"></div>
           </div>
