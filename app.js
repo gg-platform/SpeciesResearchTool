@@ -134,6 +134,7 @@ function renderAttribution(hostSel) {
 }
 
 
+
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
 const escapeHtml = (s) =>
@@ -178,6 +179,162 @@ function updateInfoBanners() {
     if (t) t.textContent = timeStr;
   });
 }
+
+
+ /* ====== Modal helpers ====== */
+function openModalWithRows(title, rows) {
+  const modal = $("#modal");
+  const host  = $("#modalTableHost");
+  $("#modalTitle").textContent = title;
+  host.innerHTML = "";
+
+  // Build table
+  const tbl = document.createElement("table");
+  const thead = document.createElement("thead");
+  thead.innerHTML = "<tr><th>Name</th><th>Date</th><th>Provider</th><th>Dataset</th><th>Record</th></tr>";
+  tbl.appendChild(thead);
+
+  const tbody = document.createElement("tbody");
+  if (!rows.length) {
+    const tr = document.createElement("tr");
+    const td = document.createElement("td");
+    td.colSpan = 5;
+    td.className = "muted";
+    td.textContent = "(no matching records)";
+    tr.appendChild(td);
+    tbody.appendChild(tr);
+  } else {
+    rows.forEach(r => {
+      const tr = document.createElement("tr");
+
+      const nm = (r.vernacularName || r.scientificName || "(unknown)").trim();
+
+      const tdName = document.createElement("td");
+      tdName.appendChild(googleLinkEl(nm));
+
+      const tdDate = document.createElement("td");
+      tdDate.textContent = r.eventDateStr || r.occurrenceYearStr || "";
+
+      const tdProv = document.createElement("td");
+      tdProv.textContent = r.provider || "";
+
+      const tdDs = document.createElement("td");
+      tdDs.textContent = r.dataResourceName || "";
+
+      const tdRec = document.createElement("td");
+      if (r.uuid) {
+        const a = document.createElement("a");
+        a.href = `https://records.nbnatlas.org/occurrences/${encodeURIComponent(r.uuid)}`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = "Open";
+        tdRec.appendChild(a);
+      } else {
+        tdRec.innerHTML = `<span class="muted">no uuid</span>`;
+      }
+
+      tr.append(tdName, tdDate, tdProv, tdDs, tdRec);
+      tbody.appendChild(tr);
+    });
+  }
+
+  tbl.appendChild(tbody);
+  host.appendChild(tbl);
+
+  modal.setAttribute("aria-hidden", "false");
+  // focus close
+  setTimeout(() => $("#modalClose")?.focus(), 0);
+}
+
+function closeModal() {
+  $("#modal")?.setAttribute("aria-hidden", "true");
+}
+
+(function wireModal() {
+  $("#modalClose")?.addEventListener("click", closeModal);
+  $("#modal")?.addEventListener("click", (e) => {
+    if (e.target?.dataset?.close) closeModal();
+  });
+  window.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") closeModal();
+  });
+})();
+
+
+/* ====== Filters used by chart clicks ====== */
+// monthStr format: "YYYY-MM"
+function filterByMonth(monthStr) {
+  const out = [];
+  state.rows.forEach(r => {
+    const d = parseDateFromStrings(r.eventDateStr, r.occurrenceYearStr);
+    if (!d) return;
+    if (d.toISOString().slice(0,7) === monthStr) out.push(r);
+  });
+  return out;
+}
+function filterBySpecies(name) {
+  const target = normName(name);
+  return state.rows.filter(r =>
+    normName(r.vernacularName || "") === target || normName(r.scientificName || "") === target
+  );
+}
+function filterByClass(cls) {
+  const t = (cls || "").trim().toLowerCase();
+  return state.rows.filter(r => (r.classs || "").trim().toLowerCase() === t);
+}
+function filterByBasis(basis) {
+  const t = (basis || "").trim().toLowerCase();
+  return state.rows.filter(r => (r.basisOfRecord || "").trim().toLowerCase() === t);
+}
+function filterByProvider(provider) {
+  const t = (provider || "").trim().toLowerCase();
+  return state.rows.filter(r => (r.provider || "").trim().toLowerCase() === t);
+}
+function filterByMonthAndClass(monthStr, cls) {
+  const t = (cls || "").trim().toLowerCase();
+  const out = [];
+  state.rows.forEach(r => {
+    const d = parseDateFromStrings(r.eventDateStr, r.occurrenceYearStr);
+    if (!d) return;
+    if (d.toISOString().slice(0,7) !== monthStr) return;
+    if ((r.classs || "").trim().toLowerCase() !== t) return;
+    out.push(r);
+  });
+  return out;
+}
+
+function attachChartClick(chart, getTitleAndRowsForClick) {
+  const canvas = chart?.canvas;
+  if (!canvas) return;
+  canvas.style.cursor = "pointer";
+  canvas.addEventListener("click", (evt) => {
+    const points = chart.getElementsAtEventForMode(evt, "nearest", { intersect: true }, true);
+    if (!points.length) return;
+    const el = points[0];
+    const dsIndex = el.datasetIndex;
+    const i = el.index;
+    const { title, rows } = getTitleAndRowsForClick({ chart, dsIndex, index: i }) || {};
+    if (rows) openModalWithRows(title || "Results", rows);
+  });
+}
+
+(function ensureModalWrapper(){
+  const dlg = document.querySelector('.sr-dialog');
+  const bd  = document.querySelector('.sr-backdrop');
+  const wrap = document.getElementById('modal');
+  if (dlg && bd && !wrap) {
+    const w = document.createElement('div');
+    w.id = 'modal';
+    w.setAttribute('aria-hidden','true');
+    w.setAttribute('role','dialog');
+    w.setAttribute('aria-modal','true');
+    bd.parentNode.insertBefore(w, bd);
+    w.appendChild(bd);
+    w.appendChild(dlg);
+    document.body.appendChild(w);
+  }
+})();
+
 
 /* ====== State ====== */
 const state = {
@@ -619,7 +776,7 @@ function buildOverview() {
     .sort((a, b) => b.v - a.v || a.k.localeCompare(b.k))
     .slice(0, 10);
 
-  // NEW: species richness by month
+  // species richness by month
   const richnessMap = {}; // month -> set of species
   rows.forEach((r) => {
     const d = parseDateFromStrings(r.eventDateStr, r.occurrenceYearStr);
@@ -634,7 +791,7 @@ function buildOverview() {
     richnessMap[m] ? richnessMap[m].size : 0
   );
 
-  // NEW: classs per month (stacked)
+  // classs per month (stacked)
   const monthClass = {}; // month -> class -> count
   const classSet = new Set();
   rows.forEach((r) => {
@@ -668,43 +825,71 @@ function buildOverview() {
       },
     });
   destroyCharts();
+    // Months (line)
   state.charts.months = mk($("#chartMonths"), "line", months, monthCounts);
-  state.charts.species = mk(
-    $("#chartSpecies"),
-    "bar",
-    spTop.map((x) => x.k),
-    spTop.map((x) => x.v)
-  );
+  attachChartClick(state.charts.months, ({ index }) => {
+    const monthStr = months[index];
+    return { title: `Records in ${monthStr}`, rows: filterByMonth(monthStr) };
+  });
+
+  // Species (bar)
+  state.charts.species = mk($("#chartSpecies"), "bar", spTop.map(x=>x.k), spTop.map(x=>x.v));
+  attachChartClick(state.charts.species, ({ index }) => {
+    const name = spTop[index]?.k;
+    return { title: `Records for ${name}`, rows: filterBySpecies(name) };
+  });
+
+  // Class (bar)
   state.charts.classs = mk($("#chartClass"), "bar", clLabels, clCounts);
+  attachChartClick(state.charts.classs, ({ index }) => {
+    const cls = clLabels[index];
+    return { title: `Records in class: ${cls}`, rows: filterByClass(cls) };
+  });
+
+  // Basis (pie)
   state.charts.basis = new Chart($("#chartBasis"), {
     type: "pie",
     data: { labels: bsLabels, datasets: [{ data: bsCounts }] },
     options: { responsive: true, maintainAspectRatio: false },
   });
-  state.charts.providers = mk(
-    $("#chartProviders"),
-    "bar",
-    pvTop.map((x) => x.k),
-    pvTop.map((x) => x.v)
-  );
-  state.charts.richness = mk(
-    $("#chartRichness"),
-    "line",
-    rMonths,
-    richnessCounts
-  );
+  attachChartClick(state.charts.basis, ({ index }) => {
+    const label = bsLabels[index];
+    return { title: `Records with basis: ${label}`, rows: filterByBasis(label) };
+  });
+
+  // Providers (bar)
+  state.charts.providers = mk($("#chartProviders"), "bar", pvTop.map(x=>x.k), pvTop.map(x=>x.v));
+  attachChartClick(state.charts.providers, ({ index }) => {
+    const prov = pvTop[index]?.k;
+    return { title: `Records from provider: ${prov}`, rows: filterByProvider(prov) };
+  });
+
+  // Richness (line) -> click shows month’s records
+  state.charts.richness = mk($("#chartRichness"), "line", rMonths, richnessCounts);
+  attachChartClick(state.charts.richness, ({ index }) => {
+    const monthStr = rMonths[index];
+    return { title: `Records in ${monthStr}`, rows: filterByMonth(monthStr) };
+  });
+
+  // Class per month (stacked bar) – need both the month and the class from dataset label
   state.charts.classMonthly = new Chart($("#chartClassMonthly"), {
     type: "bar",
     data: { labels: mcMonths, datasets: mcDatasets },
     options: {
       responsive: true,
-       maintainAspectRatio: false,
+      maintainAspectRatio: false,
       plugins: { legend: { display: true } },
       scales: {
         x: { stacked: true, ticks: { color: "#cfe4d6" } },
         y: { stacked: true, ticks: { color: "#cfe4d6" } },
       },
     },
+  });
+  // Click handler for stacked bars
+  attachChartClick(state.charts.classMonthly, ({ dsIndex, index }) => {
+    const monthStr = mcMonths[index];
+    const cls = mcDatasets[dsIndex]?.label;
+    return { title: `Records in ${monthStr} — ${cls}`, rows: filterByMonthAndClass(monthStr, cls) };
   });
 
   // Render or hide data tables under each chart

@@ -1,316 +1,347 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Species Research Tool</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-    <!-- Strict CSP -->
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self';
+<head>
+  <meta charset="utf-8" />
+  <title>Species Research Tool</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <!-- Strict CSP -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self';
                script-src 'self' https://cdn.jsdelivr.net https://unpkg.com;
                style-src   'self' https://unpkg.com;
                img-src     'self' data: https://*.tile.openstreetmap.org https://unpkg.com;
                font-src    'self' data:;
                connect-src 'self' https:;
                frame-ancestors 'self' https://*.wixsite.com https://*.wix.com;
-               base-uri 'none'"
-    />
+               base-uri 'none'" />
 
-    <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./styles.css" />
 
-    <!-- External libs -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
-    <link  href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet"/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
-    <link  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" rel="stylesheet"/>
-    <link  href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" rel="stylesheet"/>
-    <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
+  <!-- External libs -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" defer></script>
+  <link href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" rel="stylesheet" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" defer></script>
+  <link href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" rel="stylesheet" />
+  <link href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" rel="stylesheet" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
 
-    <script src="./app.js" type="module" defer></script>
-  </head>
-  <body>
-    <header class="appbar">
-      <div class="logo">Species Research Tool</div>
-      <nav class="nav">
-        <button class="btn primary" data-goto="home">Home</button>
-        <button class="btn" data-goto="overview">Results - overview</button>
-        <button class="btn" data-goto="bocc">Resutls - BoCC Analysis</button>
-        <button class="btn" data-goto="map">Results - Map</button>
-        <button class="btn" data-goto="boccRef">Reference</button>
-     
-      </nav>
-    </header>
+  <script src="./app.js" type="module" defer></script>
+</head>
 
-    <main class="container">
-      <div class="tabs">
-        <span class="tab active" data-target="home">Home</span>
-        <span class="tab" data-target="overview">Results - overview</span>
-        <span class="tab" data-target="bocc">Results - BoCC Analysis</span>
-        <span class="tab" data-target="map">Results - Map</span>
-        <span class="tab" data-target="boccRef">Reference</span>
-        
-      </div>
+<body>
+  <header class="appbar">
+    <div class="logo">Species Research Tool</div>
+    <nav class="nav">
+      <button class="btn primary" data-goto="home">Home</button>
+      <button class="btn" data-goto="overview">Results - overview</button>
+      <button class="btn" data-goto="bocc">Resutls - BoCC Analysis</button>
+      <button class="btn" data-goto="map">Results - Map</button>
+      <button class="btn" data-goto="boccRef">Reference</button>
 
-      <!-- HOME -->
-      <section id="home">
-        <div class="grid">
-          <div class="card col-8">
-            <div class="titlebar"><h1>Welcome</h1></div>
+    </nav>
+  </header>
 
-            <h2>How to get your API link (NBN Atlas)</h2>
-            <ol>
-              <li>
-                Go to
-                <a href="https://records.nbnatlas.org/search#tab_spatialSearch" target="_blank" rel="noopener">NBN Atlas Spatial Search</a>.
-              </li>
-              <li>
-                Either <b>draw a polygon</b> on the map or
-                <b>Import an existing GIS area</b> (e.g., a shapefile/GeoJSON boundary). The smaller the area/number of observations the quicker the results.
-              </li>
-              <li>Run the search to view results.</li>
-              <li>
-                On the results screen, click <b>API</b> (top-right). Copy the
-                <b>JSON web service API</b> URL.
-              </li>
-              <li>Paste that URL into the field on the right and click <b>Fetch</b>.</li>
-            </ol>
+  <main class="container">
+    <div class="tabs">
+      <span class="tab active" data-target="home">Home</span>
+      <span class="tab" data-target="overview">Results - overview</span>
+      <span class="tab" data-target="bocc">Results - BoCC Analysis</span>
+      <span class="tab" data-target="map">Results - Map</span>
+      <span class="tab" data-target="boccRef">Reference</span>
 
-            <h2>What this app does</h2>
-            <ul>
-              <li><b>Fetches records</b> from your API URL in batches of 500 up to ~200,000.</li>
-              <li>
-                <b>Overview</b> shows charts (counts by month, classs, providers, basis of record, species) + extra insights (species richness, classs per month).
-                Toggle the <b>data tables</b> behind each chart.
-              </li>
-              <li>
-                <b>Birds of Conservation Concern (BoCC) Analysis</b> matches results to the BoCC reference with three easy tables (Red/Amber/Former breeding) and a classs breakdown.
-              </li>
-              <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
-              <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
-              <li>We've left an example link in the search box so you can check out how results appear.</li>
-            </ul>
+    </div>
 
-  
-            <div class="card col-12 muted" >
-  <h2>Data source</h2>
-              This tool uses data from the <a href="https://nbnatlas.org" target="_blank" rel="noopener">NBN Atlas</a>.
-  Data are provided by NBN Atlas Data Partners and carry dataset-specific licences. We show a dataset licence overview on the results overview, and full detail is listed on NBN Atlas alongside each record.
-</p>
-  <ul class="muted">
-    <li><strong>CC0</strong>: Public domain — free to use; attribution appreciated.</li>
-    <li><strong>CC-BY</strong>: Use allowed (including commercial) with attribution.</li>
-    <li><strong>CC-BY-NC</strong>: <em>Non-commercial only</em> with attribution.</li>
-    <li><strong>OGL</strong>: Use allowed (including commercial) with attribution.</li>
-  </ul>
-</div>
-<p class="help">
-              <b>Disclaimer &amp; License</b><br />
-              This software and its accompanying materials are provided <strong>"AS IS"</strong>,
-              <strong>without warranty or guarantee of any kind</strong>, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
-              In no event shall the authors or copyright holders be liable for any claim, damages or other liability,
-              whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
-              <br />
-              By using this software, you agree to the terms of the MIT License.<br />
+    <!-- HOME -->
+    <section id="home">
+      <div class="grid">
+        <div class="card col-8">
+          <div class="titlebar">
+            <h1>Welcome</h1>
+          </div>
+
+          <h2>How to get your API link (NBN Atlas)</h2>
+          <ol>
+            <li>
+              Go to
+              <a href="https://records.nbnatlas.org/search#tab_spatialSearch" target="_blank" rel="noopener">NBN Atlas
+                Spatial Search</a>.
+            </li>
+            <li>
+              Either <b>draw a polygon</b> on the map or
+              <b>Import an existing GIS area</b> (e.g., a shapefile/GeoJSON boundary). The smaller the area/number of
+              observations the quicker the results.
+            </li>
+            <li>Run the search to view results.</li>
+            <li>
+              On the results screen, click <b>API</b> (top-right). Copy the
+              <b>JSON web service API</b> URL.
+            </li>
+            <li>Paste that URL into the field on the right and click <b>Fetch</b>.</li>
+          </ol>
+
+          <h2>What this app does</h2>
+          <ul>
+            <li><b>Fetches records</b> from your API URL in batches of 500 up to ~200,000.</li>
+            <li>
+              <b>Overview</b> shows charts (counts by month, classs, providers, basis of record, species) + extra
+              insights (species richness, classs per month).
+              Toggle the <b>data tables</b> behind each chart.
+            </li>
+            <li>
+              <b>Birds of Conservation Concern (BoCC) Analysis</b> matches results to the BoCC reference with three easy
+              tables (Red/Amber/Former breeding) and a classs breakdown.
+            </li>
+            <li><b>BoCC Reference</b> displays the full reference list from <code>bocc.json</code>.</li>
+            <li><b>Map</b> plots clustered points (Leaflet + OSM).</li>
+            <li>We've left an example link in the search box so you can check out how results appear.</li>
+          </ul>
+
+
+          <div class="card col-12 muted">
+            <h2>Data source</h2>
+            This tool uses data from the <a href="https://nbnatlas.org" target="_blank" rel="noopener">NBN Atlas</a>.
+            Data are provided by NBN Atlas Data Partners and carry dataset-specific licences. We show a dataset licence
+            overview on the results overview, and full detail is listed on NBN Atlas alongside each record.
             </p>
-
-          </div>
-
-          <div class="card col-4">
-            <h2>Fetch data</h2>
-            <label for="apiUrl" class="help">Paste your NBN Atlas Occurrences API URL in th box below:</label>
-            <input id="apiUrl" type="text" placeholder="Paste the NBN Atlas Occurrences API URL here" value="https://records-ws.nbnatlas.org/occurrences/search?q=*%3A*&fq=-occurrence_status%3A%22absent%22&lat=51.49289&lon=-2.5478497&radius=0.4" />
-            <div class="row">
-              <button id="btnFetch" class="btn primary">Fetch</button>
-              <button id="btnCancel" class="btn" disabled>Cancel</button>
-            </div>
-            <div id="status" class="muted">Idle.</div>
-
-            <hr  />
-            <h2>Tips</h2>
-            <ul class="muted" >
-              <li>You can refetch anytime with a different area or filters.</li>
-              <li>Large areas return many records — progress appears above, you will be redirected to the results once all data is fetched.</li>
-              <li>To give it a go - click 'fetch' to view results from a NBN search we've already done for an area of Stoke Park, Bristol.</li>
+            <ul class="muted">
+              <li><b>CC0</b>: Public domain — free to use; attribution appreciated.</li>
+              <li><b>CC-BY</b>: Use allowed (including commercial) with attribution.</li>
+              <li><b>CC-BY-NC</b>: <em>Non-commercial only</em> with attribution.</li>
+              <li><b>OGL</b>: Use allowed (including commercial) with attribution.</li>
             </ul>
-
           </div>
-        </div>
-      </section>
-
-      <!-- OVERVIEW -->
-      <section id="overview" hidden>
-        <div class="grid">
-          <div class="card col-12">
-            <div class="titlebar">
-              <h1>Overview</h1>
-              <div class="row">
-                <span class="chip">Total records: <b id="totalRecords">-</b></span>
-                <button id="btnToggleTables" class="btn">Show data tables</button>
-              </div>
-            </div>
-            <!-- Info banner -->
-            <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_overview" href="#" target="_blank" rel="noopener">-</a></span>
-              <span class="sep">·</span>
-              <span class="time">Fetched: <span id="infoTime_overview">-</span></span>
-            </div>
-          </div>
-
-          <div class="card col-6">
-            <h2>Observations by month</h2>
-            <div class="chartbox h220">
-              <canvas id="chartMonths" aria-label="Observations by month"></canvas>
-            </div>
-            <div id="tableMonths" class="data-table" hidden></div>
-          </div>
-
-          <div class="card col-6">
-            <h2>Top 10 species</h2>
-            <div class="chartbox h220">
-              <canvas id="chartSpecies" aria-label="Top 10 species"></canvas>
-            </div>
-            <div id="tableSpecies" class="data-table" hidden></div>
-          </div>
-
-          <div class="card col-6">
-            <h2>Observations by classs</h2>
-            <div class="chartbox h220">
-              <canvas id="chartClass" aria-label="Observations by classs"></canvas>
-            </div>
-            <div id="tableClass" class="data-table" hidden></div>
-          </div>
-
-          <div class="card col-6">
-            <h2>Basis of record</h2>
-            <div class="chartbox h220">
-              <canvas id="chartBasis" aria-label="Basis of record"></canvas>
-            </div>
-            <div id="tableBasis" class="data-table" hidden></div>
-          </div>
-
-          <div class="card col-12">
-            <h2>Top 10 data providers</h2>
-            <div class="chartbox h240">
-              <canvas id="chartProviders" aria-label="Top 10 data providers"></canvas>
-            </div>
-            <div id="tableProviders" class="data-table" hidden></div>
-          </div>
-
-          <div class="card col-12">
-            <h2>Observations by classs per month (stacked)</h2>
-            <div class="chartbox h300">
-              <canvas id="chartClassMonthly"></canvas>
-            </div>
-            <div id="tableClassMonthly" class="data-table"></div>
-          </div>
-
-          <div class="card col-12">
-            <h2>Species richness by month</h2>
-            <div class="chartbox h300">
-              <canvas id="chartRichness"></canvas>
-            </div>
-            <div id="tableRichness" class="data-table"></div>
-          </div>
-         <div class="card col-12">
-  <h2>Records by provider</h2>
-  <div class="help">Expand a provider to see its records. Each record links to its NBN Atlas occurrence page.</div>
-  <div id="tableProviderRecords"></div>
-         </div>
+          <p class="help">
+            <b>Disclaimer &amp; License</b><br />
+            This software and its accompanying materials are provided <strong>"AS IS"</strong>,
+            <strong>without warranty or guarantee of any kind</strong>, express or implied, including but not limited to
+            the warranties of merchantability, fitness for a particular purpose and noninfringement.
+            In no event shall the authors or copyright holders be liable for any claim, damages or other liability,
+            whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software
+            or the use or other dealings in the software.
+            <br />
+            By using this software, you agree to the terms of the MIT License.<br />
+          </p>
 
         </div>
-      </section>
 
-      <!-- BOCC ANALYSIS -->
-      <section id="bocc" hidden>
-        <div class="grid">
-          <div class="card col-12">
-            <div class="titlebar">
-              <h1>Birds of Conservation Concern (BoCC) analysis</h1>
-              <div class="muted">Matches your results to the reference list in <code data-goto="boccRef">bocc.json</code></div>
+        <div class="card col-4">
+          <h2>Fetch data</h2>
+          <label for="apiUrl" class="help">Paste your NBN Atlas Occurrences API URL in th box below:</label>
+          <input id="apiUrl" type="text" placeholder="Paste the NBN Atlas Occurrences API URL here"
+            value="https://records-ws.nbnatlas.org/occurrences/search?q=*%3A*&fq=-occurrence_status%3A%22absent%22&lat=51.49289&lon=-2.5478497&radius=0.4" />
+          <div class="row">
+            <button id="btnFetch" class="btn primary">Fetch</button>
+            <button id="btnCancel" class="btn" disabled>Cancel</button>
+          </div>
+          <div id="status" class="muted">Idle.</div>
+
+          <hr />
+          <h2>Tips</h2>
+          <ul class="muted">
+            <li>You can refetch anytime with a different area or filters.</li>
+            <li>Large areas return many records — progress appears above, you will be redirected to the results once all
+              data is fetched.</li>
+            <li>To give it a go - click 'fetch' to view results from a NBN search we've already done for an area of
+              Stoke Park, Bristol.</li>
+          </ul>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW -->
+    <section id="overview" hidden>
+      <div class="grid">
+        <div class="card col-12">
+          <div class="titlebar">
+            <h1>Overview</h1>
+            <div class="row">
+              <span class="chip">Total records: <b id="totalRecords">-</b></span>
+              <button id="btnToggleTables" class="btn">Show data tables</button>
             </div>
-            <!-- Info banner -->
-            <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">-</a></span>
-              <span class="sep">·</span>
-              <span class="time">Fetched: <span id="infoTime_bocc">-</span></span>
+          </div>
+          <!-- Info banner -->
+          <div class="infobar" aria-live="polite">
+            <span class="src">Source: <a id="infoSrc_overview" href="#" target="_blank" rel="noopener">-</a></span>
+            <span class="sep">·</span>
+            <span class="time">Fetched: <span id="infoTime_overview">-</span></span>
+          </div>
+        </div>
+
+        <div class="card col-6">
+          <h2>Observations by month</h2>
+          <div class="chartbox h220">
+            <canvas id="chartMonths" aria-label="Observations by month"></canvas>
+          </div>
+          <div id="tableMonths" class="data-table" hidden></div>
+        </div>
+
+        <div class="card col-6">
+          <h2>Top 10 species</h2>
+          <div class="chartbox h220">
+            <canvas id="chartSpecies" aria-label="Top 10 species"></canvas>
+          </div>
+          <div id="tableSpecies" class="data-table" hidden></div>
+        </div>
+
+        <div class="card col-6">
+          <h2>Observations by classs</h2>
+          <div class="chartbox h220">
+            <canvas id="chartClass" aria-label="Observations by classs"></canvas>
+          </div>
+          <div id="tableClass" class="data-table" hidden></div>
+        </div>
+
+        <div class="card col-6">
+          <h2>Basis of record</h2>
+          <div class="chartbox h220">
+            <canvas id="chartBasis" aria-label="Basis of record"></canvas>
+          </div>
+          <div id="tableBasis" class="data-table" hidden></div>
+        </div>
+
+        <div class="card col-12">
+          <h2>Top 10 data providers</h2>
+          <div class="chartbox h240">
+            <canvas id="chartProviders" aria-label="Top 10 data providers"></canvas>
+          </div>
+          <div id="tableProviders" class="data-table" hidden></div>
+        </div>
+
+        <div class="card col-12">
+          <h2>Observations by classs per month (stacked)</h2>
+          <div class="chartbox h300">
+            <canvas id="chartClassMonthly"></canvas>
+          </div>
+          <div id="tableClassMonthly" class="data-table"></div>
+        </div>
+
+        <div class="card col-12">
+          <h2>Species richness by month</h2>
+          <div class="chartbox h300">
+            <canvas id="chartRichness"></canvas>
+          </div>
+          <div id="tableRichness" class="data-table"></div>
+        </div>
+        <div class="card col-12">
+          <h2>Records by provider</h2>
+          <div class="help">Expand a provider to see its records. Each record links to its NBN Atlas occurrence page.
+          </div>
+          <div id="tableProviderRecords"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BOCC ANALYSIS -->
+    <section id="bocc" hidden>
+      <div class="grid">
+        <div class="card col-12">
+          <div class="titlebar">
+            <h1>Birds of Conservation Concern (BoCC) analysis</h1>
+            <div class="muted">Matches your results to the reference list in <code data-goto="boccRef">bocc.json</code>
             </div>
           </div>
-
-          <!-- Distinct species per list & class -->
-          <div id="boccDistinct" class="card col-12">
-            <h2>Count of unique Birds of Conservation Concern (BoCC) species found</h2>
-            <div class="tbl"></div>
+          <!-- Info banner -->
+          <div class="infobar" aria-live="polite">
+            <span class="src">Source: <a id="infoSrc_bocc" href="#" target="_blank" rel="noopener">-</a></span>
+            <span class="sep">·</span>
+            <span class="time">Fetched: <span id="infoTime_bocc">-</span></span>
           </div>
+        </div>
 
-          <!-- Matched species tables -->
-          <div id="boccRed" class="card col-12">
-            <h2>Red list — matched species</h2>
-            <div class="help">Species | Annotation | Occurrences</div>
-            <div class="tbl"></div>
-          </div>
+        <!-- Distinct species per list & class -->
+        <div id="boccDistinct" class="card col-12">
+          <h2>Count of unique Birds of Conservation Concern (BoCC) species found</h2>
+          <div class="tbl"></div>
+        </div>
 
-          <div id="boccAmber" class="card col-12">
-            <h2>Amber list — matched species</h2>
-            <div class="help">Species | Annotation | Occurrences</div>
-            <div class="tbl"></div>
-          </div>
+        <!-- Matched species tables -->
+        <div id="boccRed" class="card col-12">
+          <h2>Red list — matched species</h2>
+          <div class="help">Species | Annotation | Occurrences</div>
+          <div class="tbl"></div>
+        </div>
 
-          <div id="boccFormer" class="card col-12">
-            <h2>Former breeding — matched species</h2>
-            <div class="help">Species | Annotation | Occurrences</div>
-            <div class="tbl"></div>
+        <div id="boccAmber" class="card col-12">
+          <h2>Amber list — matched species</h2>
+          <div class="help">Species | Annotation | Occurrences</div>
+          <div class="tbl"></div>
+        </div>
+
+        <div id="boccFormer" class="card col-12">
+          <h2>Former breeding — matched species</h2>
+          <div class="help">Species | Annotation | Occurrences</div>
+          <div class="tbl"></div>
+        </div>
+        <div class="card col-12">
+          <h2>Attribution</h2>
+          <div id="attr_bocc" class="attribution"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- BOCC REFERENCE -->
+    <section id="boccRef" hidden>
+      <div class="grid">
+        <div class="card col-12">
+          <div class="titlebar">
+            <h1>Birds of Conservation Concern reference</h1>
+            <div class="muted">Sourced from <code>bocc.json</code></div>
           </div>
-          <div class="card col-12">
-  <h2>Attribution</h2>
-  <div id="attr_bocc" class="attribution"></div>
+          <div id="boccRefTable"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- MAP -->
+    <section id="map" hidden>
+      <div class="grid">
+        <div class="card col-12">
+          <div class="titlebar">
+            <h1>Map</h1>
+            <div class="row">
+              <label class="help">Max points:
+                <input id="maxPoints" class="input-number" type="number" min="100" max="20000" step="100"
+                  value="5000" />
+              </label>
+              <button id="btnRenderMap" class="btn">Render</button>
+            </div>
+          </div>
+          <!-- Info banner -->
+          <div class="infobar" aria-live="polite">
+            <span class="src">Source: <a id="infoSrc_map" href="#" target="_blank" rel="noopener">–</a></span>
+            <span class="sep">·</span>
+            <span class="time">Fetched: <span id="infoTime_map">-</span></span>
+          </div>
+          <div id="mapCanvas"></div>
+        </div>
+        <div class="card col-12">
+          <h2>Attribution</h2>
+          <div id="attr_map" class="attribution"></div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+<!-- Modal overlay -->
+<div id="modal" aria-hidden="true" role="dialog" aria-modal="true">
+  <div class="sr-backdrop" data-close="1"></div>
+  <div class="sr-dialog" role="document">
+    <div class="sr-header">
+      <h2 id="modalTitle">Results</h2>
+      <button class="btn btn-icon" id="modalClose" aria-label="Close">✕</button>
+    </div>
+    <div class="sr-body">
+      <div id="modalTableHost"></div>
+    </div>
+  </div>
 </div>
 
-        </div>
-      </section>
 
-      <!-- BOCC REFERENCE -->
-      <section id="boccRef" hidden>
-        <div class="grid">
-          <div class="card col-12">
-            <div class="titlebar">
-              <h1>Birds of Conservation Concern reference</h1>
-              <div class="muted">Sourced from <code>bocc.json</code></div>
-            </div>
-            <div id="boccRefTable"></div>
-          </div>
-        </div>
-      </section>
+</body>
 
-      <!-- MAP -->
-      <section id="map" hidden>
-        <div class="grid">
-          <div class="card col-12">
-            <div class="titlebar">
-              <h1>Map</h1>
-              <div class="row">
-                <label class="help">Max points:
-                  <input id="maxPoints" class="input-number" type="number" min="100" max="20000" step="100" value="5000" />
-                </label>
-                <button id="btnRenderMap" class="btn">Render</button>
-              </div>
-            </div>
-            <!-- Info banner -->
-            <div class="infobar" aria-live="polite">
-              <span class="src">Source: <a id="infoSrc_map" href="#" target="_blank" rel="noopener">–</a></span>
-              <span class="sep">·</span>
-              <span class="time">Fetched: <span id="infoTime_map">-</span></span>
-            </div>
-            <div id="mapCanvas"></div>
-          </div>
-          <div class="card col-12">
-  <h2>Attribution</h2>
-  <div id="attr_map" class="attribution"></div>
-</div>
-
-        </div>
-      </section>
-    </main>
-  </body>
 </html>
