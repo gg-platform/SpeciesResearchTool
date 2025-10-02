@@ -92,14 +92,29 @@
               <li>We've left an example link in the search box so you can check out how results appear.</li>
             </ul>
 
-            <p class="help">
+  
+            <div class="card col-12 muted" >
+  <h2>Data source</h2>
+              This tool uses data from the <a href="https://nbnatlas.org" target="_blank" rel="noopener">NBN Atlas</a>.
+  Data are provided by NBN Atlas Data Partners and carry dataset-specific licences. We show a dataset licence overview on the results overview, and full detail is listed on NBN Atlas alongside each record.
+</p>
+  <ul class="muted">
+    <li><strong>CC0</strong>: Public domain — free to use; attribution appreciated.</li>
+    <li><strong>CC-BY</strong>: Use allowed (including commercial) with attribution.</li>
+    <li><strong>CC-BY-NC</strong>: <em>Non-commercial only</em> with attribution.</li>
+    <li><strong>OGL</strong>: Use allowed (including commercial) with attribution.</li>
+  </ul>
+</div>
+<p class="help">
               <b>Disclaimer &amp; License</b><br />
               This software and its accompanying materials are provided <strong>"AS IS"</strong>,
               <strong>without warranty or guarantee of any kind</strong>, express or implied, including but not limited to the warranties of merchantability, fitness for a particular purpose and noninfringement.
               In no event shall the authors or copyright holders be liable for any claim, damages or other liability,
               whether in an action of contract, tort or otherwise, arising from, out of or in connection with the software or the use or other dealings in the software.
-              <br />Use of this software is governed by the <strong>MIT License</strong>.
+              <br />
+              By using this software, you agree to the terms of the MIT License.<br />
             </p>
+
           </div>
 
           <div class="card col-4">
@@ -118,8 +133,8 @@
               <li>You can refetch anytime with a different area or filters.</li>
               <li>Large areas return many records — progress appears above, you will be redirected to the results once all data is fetched.</li>
               <li>To give it a go - click 'fetch' to view results from a NBN search we've already done for an area of Stoke Park, Bristol.</li>
-
             </ul>
+
           </div>
         </div>
       </section>
@@ -198,6 +213,12 @@
             </div>
             <div id="tableRichness" class="data-table"></div>
           </div>
+         <div class="card col-12">
+  <h2>Records by provider</h2>
+  <div class="help">Expand a provider to see its records. Each record links to its NBN Atlas occurrence page.</div>
+  <div id="tableProviderRecords"></div>
+         </div>
+
         </div>
       </section>
 
@@ -223,12 +244,6 @@
             <div class="tbl"></div>
           </div>
 
-          <!-- Class breakdown
-          <div id="boccByClass" class="card col-12">
-            <h2>BoCC occurrences by classs</h2>
-            <div class="tbl"></div>
-          </div> -->
-
           <!-- Matched species tables -->
           <div id="boccRed" class="card col-12">
             <h2>Red list — matched species</h2>
@@ -247,6 +262,11 @@
             <div class="help">Species | Annotation | Occurrences</div>
             <div class="tbl"></div>
           </div>
+          <div class="card col-12">
+  <h2>Attribution</h2>
+  <div id="attr_bocc" class="attribution"></div>
+</div>
+
         </div>
       </section>
 
@@ -284,6 +304,11 @@
             </div>
             <div id="mapCanvas"></div>
           </div>
+          <div class="card col-12">
+  <h2>Attribution</h2>
+  <div id="attr_map" class="attribution"></div>
+</div>
+
         </div>
       </section>
     </main>

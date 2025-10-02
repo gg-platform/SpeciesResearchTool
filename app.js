@@ -18,6 +18,121 @@ function normName(s){
     .toLowerCase();
 }
 
+function licenseInfo(code) {
+  const c = String(code || "").toUpperCase().trim();
+  switch (c) {
+    case "CC0":
+      return {
+        code: "CC0",
+        label: "CC0 (Public Domain)",
+        href: "https://creativecommons.org/publicdomain/zero/1.0/",
+        requiresAttribution: false,
+        note: "Attribution appreciated but not required.",
+      };
+    case "CC-BY":
+      return {
+        code: "CC-BY",
+        label: "CC-BY 4.0",
+        href: "https://creativecommons.org/licenses/by/4.0/",
+        requiresAttribution: true,
+        note: "Attribution required.",
+      };
+    case "CC-BY-NC":
+      return {
+        code: "CC-BY-NC",
+        label: "CC-BY-NC 4.0",
+        href: "https://creativecommons.org/licenses/by-nc/4.0/",
+        requiresAttribution: true,
+        note: "Non-commercial use only; attribution required.",
+      };
+    case "OGL":
+      return {
+        code: "OGL",
+        label: "OGL v3.0",
+        href: "https://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/",
+        requiresAttribution: true,
+        note: "Attribution required.",
+      };
+    default:
+      return {
+        code: c || "Unknown",
+        label: c || "Unknown licence",
+        href: "#",
+        requiresAttribution: true,
+        note: "",
+      };
+  }
+}
+
+function renderAttribution(hostSel) {
+  const host = document.querySelector(hostSel);
+  if (!host) return;
+
+  host.innerHTML = "";
+
+  // Aggregate unique tuples (provider + dataset + licence)
+  const key = (p, r, l) =>
+    [p || "(unknown provider)", r || "(unknown dataset)", (l || "").toUpperCase()].join("||");
+  const seen = new Map();
+
+  state.rows.forEach((r) => {
+    const k = key(r.provider, r.dataResourceName, r.license);
+    if (!seen.has(k)) {
+      seen.set(k, {
+        provider: r.provider || "(unknown provider)",
+        dataset: r.dataResourceName || "(unknown dataset)",
+        license: (r.license || "").toUpperCase(),
+      });
+    }
+  });
+
+  if (!seen.size) {
+    host.innerHTML = `<div class="muted">No attribution available (no results yet).</div>`;
+    return;
+  }
+
+  const ul = document.createElement("ul");
+  ul.className = "attr-list";
+
+  Array.from(seen.values())
+    .sort((a, b) => a.provider.localeCompare(b.provider) || a.dataset.localeCompare(b.dataset))
+    .forEach(({ provider, dataset, license }) => {
+      const li = document.createElement("li");
+      const lic = licenseInfo(license);
+
+      // Phrase attribution depending on licence
+      // CC0: optional credit, others: required credit
+      const creditPrefix =
+        lic.code === "CC0"
+          ? "Uses data"
+          : "Contains data ©";
+
+      const creditBody =
+        lic.code === "CC0"
+          ? `${escapeHtml(provider)} — <em>${escapeHtml(dataset)}</em>`
+          : `${escapeHtml(provider)}, from <em>${escapeHtml(dataset)}</em>`;
+
+      const licHtml =
+        lic.href && lic.href !== "#"
+          ? `<a href="${lic.href}" target="_blank" rel="noopener">${escapeHtml(lic.label)}</a>`
+          : escapeHtml(lic.label);
+
+      li.innerHTML = `${creditPrefix} ${creditBody}, licensed under ${licHtml}. <span class="muted">${escapeHtml(
+        lic.note
+      )}</span>`;
+      ul.appendChild(li);
+    });
+
+  const note = document.createElement("div");
+  note.className = "muted";
+  note.style.marginTop = "0.5rem";
+  note.textContent =
+    "Licences and terms are set by NBN Atlas Data Partners; respect dataset-specific restrictions (e.g., CC-BY-NC is non-commercial).";
+
+  host.appendChild(ul);
+  host.appendChild(note);
+}
+
 
 const $ = (sel) => document.querySelector(sel);
 const $$ = (sel) => Array.from(document.querySelectorAll(sel));
@@ -40,7 +155,7 @@ function updateInfoBanners() {
         hour: "2-digit",
         minute: "2-digit",
       })
-    : "–";
+    : "-";
 
   [
     { link: "#infoSrc_overview", time: "#infoTime_overview" },
@@ -189,17 +304,22 @@ function toDateString(ms) {
 }
 function mapRows(occ) {
   return occ.map((o) => ({
+    uuid: o.uuid || "",                       
+    occurrenceID: o.occurrenceID || "", 
     vernacularName: o.vernacularName || "",
     scientificName: o.scientificName || "",
     classs: o.classs || "",
     basisOfRecord: o.basisOfRecord || "",
     provider: o.dataProviderName || "",
+    dataResourceName: o.dataResourceName || "",
+    license: (o.license || "").toUpperCase(),   // e.g. CC-BY, CC-BY-NC
     eventDateStr: toDateString(o.eventDate),
     occurrenceYearStr: toDateString(o.occurrenceYear),
     lat: Number(o.decimalLatitude),
     lon: Number(o.decimalLongitude),
   }));
 }
+
 // If user is currently on the Map tab, render right away
 const current = $$(".tab").find(t => t.classList.contains("active"))?.dataset.target;
 if (current === "map") {
@@ -259,6 +379,182 @@ function renderTable(hostSel, headers, rows, linkColsByName = []) {
     });
     return row;
   }
+}
+
+function renderProviderRecordTables(hostSel) {
+  const host = document.querySelector(hostSel);
+  if (!host) return;
+  host.innerHTML = "";
+
+  if (!state.rows.length) {
+    host.innerHTML = `<div class="muted">(no data)</div>`;
+    return;
+  }
+
+  // -------- Group by provider --------
+  const byProvider = new Map();
+  state.rows.forEach((r) => {
+    const prov = (r.provider || "(unknown provider)").trim();
+    if (!byProvider.has(prov)) byProvider.set(prov, []);
+    byProvider.get(prov).push(r);
+  });
+
+  const providers = Array.from(byProvider.keys()).sort((a, b) => a.localeCompare(b));
+
+  providers.forEach((prov) => {
+    const rows = byProvider.get(prov) || [];
+
+    // Distinct (dataset, licence) for this provider (mini summary under summary)
+    const dsLic = new Map();
+    rows.forEach((r) => {
+      const k = `${r.dataResourceName || "(unknown dataset)"}||${r.license || ""}`;
+      if (!dsLic.has(k)) dsLic.set(k, { dataset: r.dataResourceName || "(unknown dataset)", license: r.license || "" });
+    });
+
+    const wrap = document.createElement("details");
+    wrap.open = providers.length <= 3;
+
+    const summary = document.createElement("summary");
+    summary.innerHTML = `${escapeHtml(prov)} <span class="muted">(${rows.length} records)</span>`;
+    wrap.appendChild(summary);
+
+    // Per-provider dataset/licence bullets
+    const ul = document.createElement("ul");
+    ul.className = "muted";
+    dsLic.forEach(({ dataset, license }) => {
+      const li = document.createElement("li");
+      const lic = licenseInfo(license);
+      li.innerHTML =
+        `<em>${escapeHtml(dataset)}</em> — ` +
+        (lic.href && lic.href !== "#"
+          ? `<a target="_blank" rel="noopener" href="${lic.href}">${escapeHtml(lic.label)}</a>`
+          : escapeHtml(lic.label));
+      ul.appendChild(li);
+    });
+    wrap.appendChild(ul);
+
+    // Records table
+    const table = document.createElement("table");
+    const thead = document.createElement("thead");
+    thead.innerHTML =
+      "<tr><th>Species</th><th>Scientific</th><th>Date</th><th>Dataset</th><th>Licence</th><th>Record</th></tr>";
+    table.appendChild(thead);
+
+    const tbody = document.createElement("tbody");
+    rows.forEach((r) => {
+      const tr = document.createElement("tr");
+
+      const nm = (r.vernacularName || r.scientificName || "(unknown)").trim();
+
+      const tdSpecies = document.createElement("td");
+      tdSpecies.appendChild(googleLinkEl(nm));
+
+      const tdSci = document.createElement("td");
+      tdSci.textContent = r.scientificName || "";
+
+      const tdDate = document.createElement("td");
+      tdDate.textContent = r.eventDateStr || r.occurrenceYearStr || "";
+
+      const tdDataset = document.createElement("td");
+      tdDataset.textContent = r.dataResourceName || "";
+
+      const tdLicence = document.createElement("td");
+      const lic = licenseInfo(r.license);
+      if (lic.href && lic.href !== "#") {
+        const a = document.createElement("a");
+        a.href = lic.href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = lic.label;
+        tdLicence.appendChild(a);
+      } else {
+        tdLicence.textContent = lic.label;
+      }
+
+      const tdLink = document.createElement("td");
+      if (r.uuid) {
+        const a = document.createElement("a");
+        a.href = `https://records.nbnatlas.org/occurrences/${encodeURIComponent(r.uuid)}`;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = "View record";
+        tdLink.appendChild(a);
+      } else {
+        tdLink.innerHTML = `<span class="muted">no uuid</span>`;
+      }
+
+      tr.append(tdSpecies, tdSci, tdDate, tdDataset, tdLicence, tdLink);
+      tbody.appendChild(tr);
+    });
+
+    table.appendChild(tbody);
+    wrap.appendChild(table);
+    host.appendChild(wrap);
+  });
+
+  // -------- DISTINCT DATASETS + LICENCES SUMMARY (bottom of section) --------
+  const distinct = new Map(); // key = dataset||lic
+  state.rows.forEach((r) => {
+    const dataset = r.dataResourceName || "(unknown dataset)";
+    const license = (r.license || "").toUpperCase();
+    const prov = (r.provider || "(unknown provider)").trim();
+    const k = `${dataset}||${license}`;
+    if (!distinct.has(k)) {
+      distinct.set(k, { dataset, license, providers: new Set(), records: 0 });
+    }
+    const entry = distinct.get(k);
+    entry.providers.add(prov);
+    entry.records += 1;
+  });
+
+  const summaryWrap = document.createElement("div");
+  summaryWrap.className = "dataset-summary";
+  summaryWrap.style.marginTop = "1rem";
+
+  const h3 = document.createElement("h3");
+  h3.textContent = "Datasets & licences (distinct)";
+  summaryWrap.appendChild(h3);
+
+  const tbl = document.createElement("table");
+  const th = document.createElement("thead");
+  th.innerHTML = "<tr><th>Dataset</th><th>Licence</th><th>Providers</th><th>Records</th></tr>";
+  tbl.appendChild(th);
+
+  const tb = document.createElement("tbody");
+  Array.from(distinct.values())
+    .sort((a, b) => a.dataset.localeCompare(b.dataset) || a.license.localeCompare(b.license))
+    .forEach(({ dataset, license, providers, records }) => {
+      const tr = document.createElement("tr");
+
+      const tdD = document.createElement("td");
+      tdD.textContent = dataset;
+
+      const tdL = document.createElement("td");
+      const lic = licenseInfo(license);
+      if (lic.href && lic.href !== "#") {
+        const a = document.createElement("a");
+        a.href = lic.href;
+        a.target = "_blank";
+        a.rel = "noopener noreferrer";
+        a.textContent = lic.label;
+        tdL.appendChild(a);
+      } else {
+        tdL.textContent = lic.label;
+      }
+
+      const tdP = document.createElement("td");
+      tdP.textContent = String(providers.size);
+
+      const tdR = document.createElement("td");
+      tdR.textContent = String(records);
+
+      tr.append(tdD, tdL, tdP, tdR);
+      tb.appendChild(tr);
+    });
+
+  tbl.appendChild(tb);
+  summaryWrap.appendChild(tbl);
+  host.appendChild(summaryWrap);
 }
 
 
@@ -746,10 +1042,13 @@ function renderMap() {
 function rebuildAll() {
   if (state.rows.length) {
     buildOverview();
+    renderProviderRecordTables("#tableProviderRecords");
+
     if (state.bocc) {
       buildBoccAnalysis();
       buildBoccReference();
     }
+
   } else {
     // Clear Overview tables if no data
     [
@@ -760,12 +1059,15 @@ function rebuildAll() {
       "#tableProviders",
       "#tableRichness",
       "#tableClassMonthly",
+      '#tableProviderRecords',
     ].forEach((sel) => {
       const el = $(sel);
       if (el) el.innerHTML = "";
     });
+    
   }
 }
+
 
 /* ====== Event wiring ====== */
 function wireControls() {
