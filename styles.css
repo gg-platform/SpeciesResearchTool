@@ -1,3 +1,19 @@
+/* Modal-trigger buttons in tables */
+.count-modal-btn, .name-modal-btn, .distinct-modal-btn {
+  background: #203126;
+  color: #cfe4d6;
+  border: none;
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: 0 2px;
+  cursor: pointer;
+  font-size: 1em;
+  transition: background 0.2s, color 0.2s;
+}
+.count-modal-btn:hover, .name-modal-btn:hover, .distinct-modal-btn:hover {
+  background: #6bb187;
+  color: #203126;
+}
 :root {
   --brand: #0b5d3f;
   --brand-600: #0c6b48;

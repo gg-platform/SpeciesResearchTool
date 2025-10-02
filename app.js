@@ -437,7 +437,10 @@ async function fetchAll(url, statusCb) {
       maxPages = 400,
       pages = 0,
       total = Infinity;
-    url = upsertQueryParam(normalizeUrl(url), "pageSize", String(pageSize));
+    // Always append sort params and page size
+    url = upsertQueryParam(normalizeUrl(url), "sort", "occurrence_date");
+    url = upsertQueryParam(url, "dir", "desc");
+    url = upsertQueryParam(url, "pageSize", String(pageSize));
     url = upsertQueryParam(url, "startIndex", String(startIndex));
 
     const out = [];
@@ -569,6 +572,45 @@ function renderTable(hostSel, headers, rows, linkColsByName = []) {
       const el = document.createElement(head ? "th" : "td");
       if (!head && linkIdx.has(idx) && cell) {
         el.appendChild(googleLinkEl(String(cell)));
+      } else if (!head && idx > 0 && !isNaN(cell)) {
+        // Make count cells clickable to show modal
+        const btn = document.createElement("button");
+        btn.className = "count-modal-btn";
+        btn.textContent = cell;
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          // Find records for this row
+          let title = `${headers[0]}: ${arr[0]}`;
+          let rowsToShow = [];
+          if (hostSel === "#tableSpecies") {
+            // Top species table
+            rowsToShow = state.rows.filter(r => r.speciesDisplay === arr[0]);
+          } else if (hostSel === "#tableClass") {
+            rowsToShow = state.rows.filter(r => (r.classs || "(unknown)").trim() === arr[0]);
+          } else if (hostSel === "#tableBasis") {
+            rowsToShow = state.rows.filter(r => (r.basisOfRecord || "(unknown)").trim() === arr[0]);
+          } else if (hostSel === "#tableProviders") {
+            rowsToShow = state.rows.filter(r => (r.provider || "(unknown)").trim() === arr[0]);
+          } else if (hostSel === "#tableMonths") {
+            rowsToShow = filterByMonth(arr[0]);
+          } else if (hostSel === "#tableRichness") {
+            rowsToShow = filterByMonth(arr[0]);
+          } else if (hostSel === "#tableClassMonthly") {
+            // Stacked class/month table
+            const month = arr[0];
+            const classIdx = idx - 1;
+            const cls = headers[idx];
+            rowsToShow = filterByMonthAndClass(month, cls);
+            title = `Records in ${month} — ${cls}`;
+          } else if (hostSel.startsWith("#bocc")) {
+            // BoCC tables
+            const species = arr[0];
+            rowsToShow = state.rows.filter(r => normName(r.vernacularName) === normName(species) || normName(r.scientificName) === normName(species));
+            title = `Records for BoCC species: ${species}`;
+          }
+          openModalWithRows(title, rowsToShow);
+        });
+        el.appendChild(btn);
       } else {
         el.textContent = cell;
       }
@@ -955,8 +997,11 @@ function buildOverview() {
     },
   });
   attachChartClick(state.charts.species, ({ index }) => {
+    const key = spTop[index]?.key;
+    // Filter by speciesKey for normalized matching
+    const rows = state.rows.filter(r => r.speciesKey === key);
     const display = spTop[index]?.display;
-    return { title: `Records for ${display}`, rows: filterBySpecies(display) };
+    return { title: `Records for ${display}`, rows };
   });
 
   // Class (bar)
@@ -1220,11 +1265,53 @@ function buildBoccAnalysis() {
       .filter((r) => r.count > 0)
       .sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
-    renderTableEl(
+    // Custom table builder for clickable species names
+    function renderBoccTable(hostDiv, headers, rows) {
+      if (!hostDiv) return;
+      const tbl = document.createElement("table");
+      const thead = document.createElement("thead");
+      thead.appendChild(tr(headers, true));
+      const tbody = document.createElement("tbody");
+      if (!rows.length) {
+        const td = document.createElement("td");
+        td.colSpan = headers.length;
+        td.textContent = "(no matches)";
+        const trr = document.createElement("tr");
+        trr.appendChild(td);
+        tbody.appendChild(trr);
+      } else {
+        rows.forEach((r) => tbody.appendChild(tr(r, false)));
+      }
+      tbl.append(thead, tbody);
+      hostDiv.appendChild(tbl);
+      function tr(arr, head) {
+        const row = document.createElement("tr");
+        arr.forEach((cell, idx) => {
+          const el = document.createElement(head ? "th" : "td");
+          if (!head && idx === 0 && cell) {
+            // Species name clickable
+            const btn = document.createElement("button");
+            btn.className = "name-modal-btn";
+            btn.textContent = cell;
+            btn.addEventListener("click", (e) => {
+              e.stopPropagation();
+              const species = cell;
+              const rowsToShow = state.rows.filter(r => normName(r.vernacularName) === normName(species) || normName(r.scientificName) === normName(species));
+              openModalWithRows(`Records for BoCC species: ${species}`, rowsToShow);
+            });
+            el.appendChild(btn);
+          } else {
+            el.textContent = cell;
+          }
+          row.appendChild(el);
+        });
+        return row;
+      }
+    }
+    renderBoccTable(
       host,
       ["Species", "Annotation", "Occurrences"],
-      rows.map((r) => [r.name, r.annotation, String(r.count)]),
-      ["Species"]
+      rows.map((r) => [r.name, r.annotation, String(r.count)])
     );
 
     const h2 = $(headingSel);
@@ -1238,17 +1325,6 @@ function buildBoccAnalysis() {
   renderSpeciesTable("Amber", amberHost, "#boccAmber h2");
   renderSpeciesTable("Former breeding", formerHost, "#boccFormer h2");
 
-  // // Occurrences by classs
-  // const classSetOcc = new Set();
-  // lists.forEach(L => Object.keys(classOccByList[L] || {}).forEach(c => classSetOcc.add(c)));
-  // const classColsOcc = Array.from(classSetOcc).sort((a,b)=>a.localeCompare(b));
-
-  // const bodyOcc = lists.map(L => {
-  //   const cc = classOccByList[L] || {};
-  //   const total = classColsOcc.reduce((a,c)=> a + (cc[c] || 0), 0);
-  //   return [L, String(total), ...classColsOcc.map(c => String(cc[c] || 0))];
-  // });
-  // renderTableEl(byClassHost, ["List", "Total", ...classColsOcc], bodyOcc);
 
   // Distinct species by classs (counts of unique species)
   const classSetDistinct = new Set();
@@ -1273,7 +1349,83 @@ function buildBoccAnalysis() {
       ...classColsDistinct.map((c) => String(rowObj[c]?.size || 0)),
     ];
   });
-  renderTableEl(
+  // Custom table builder for clickable distinct counts
+  function renderBoccDistinctTable(hostDiv, headers, rows) {
+    if (!hostDiv) return;
+    const tbl = document.createElement("table");
+    const thead = document.createElement("thead");
+    thead.appendChild(tr(headers, true));
+    const tbody = document.createElement("tbody");
+    if (!rows.length) {
+      const td = document.createElement("td");
+      td.colSpan = headers.length;
+      td.textContent = "(no matches)";
+      const trr = document.createElement("tr");
+      trr.appendChild(td);
+      tbody.appendChild(trr);
+    } else {
+      rows.forEach((r, ri) => tbody.appendChild(tr(r, false, ri)));
+    }
+    tbl.append(thead, tbody);
+    hostDiv.appendChild(tbl);
+    function tr(arr, head, rowIdx) {
+      const row = document.createElement("tr");
+      arr.forEach((cell, idx) => {
+        const el = document.createElement(head ? "th" : "td");
+        if (!head && idx > 0 && !isNaN(cell)) {
+          // Make distinct count cells clickable
+          const btn = document.createElement("button");
+          btn.className = "distinct-modal-btn";
+          btn.textContent = cell;
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const list = arr[0];
+            let title = `${list}`;
+            let rowsToShow = [];
+            if (idx === 1) {
+              // Distinct total for list
+              // Gather all unique species for this list
+              const speciesSet = new Set();
+              Object.values(distinctByListClass[list] || {}).forEach(set => {
+                if (set) for (const s of set) speciesSet.add(s);
+              });
+              rowsToShow = state.rows.filter(r => {
+                const n1 = normName(r.vernacularName);
+                const n2 = normName(r.scientificName);
+                for (const s of speciesSet) {
+                  const ns = normName(s);
+                  if (n1 === ns || n2 === ns) return true;
+                }
+                return false;
+              });
+              title = `Records for all distinct BoCC species in ${list}`;
+            } else {
+              // Per-class distinct for list/class
+              const cls = headers[idx];
+              const speciesSet = distinctByListClass[list]?.[cls] || new Set();
+              rowsToShow = state.rows.filter(r => {
+                const n1 = normName(r.vernacularName);
+                const n2 = normName(r.scientificName);
+                for (const s of speciesSet) {
+                  const ns = normName(s);
+                  if (n1 === ns || n2 === ns) return true;
+                }
+                return false;
+              });
+              title = `Records for distinct BoCC species in ${list} — ${cls}`;
+            }
+            openModalWithRows(title, rowsToShow);
+          });
+          el.appendChild(btn);
+        } else {
+          el.textContent = cell;
+        }
+        row.appendChild(el);
+      });
+      return row;
+    }
+  }
+  renderBoccDistinctTable(
     distinctHost,
     ["List", "Distinct total", ...classColsDistinct],
     bodyDistinct
