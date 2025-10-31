@@ -1,0 +1,1955 @@
+{
+  "metadata": {
+    "title": "Schedule 1 Bird Species Protection",
+    "description": "Birds protected under Schedule 1 of the Wildlife and Countryside Act 1981",
+    "source": "BTO - British Trust for Ornithology",
+    "sourceUrl": "https://www.bto.org/get-involved/volunteer/projects/bird-ringing-scheme/taking-part/protected-birds/s1-list",
+    "extractedDate": "2025-10-31T17:10:50.479Z",
+    "regions": [
+      "England",
+      "Scotland",
+      "Wales",
+      "Northern Ireland",
+      "Republic of Ireland",
+      "Isle of Man"
+    ]
+  },
+  "species": [
+    {
+      "name": "Arctic Tern",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Avocet",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Baillon's Crake",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Barn Owl",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Barnacle Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Bean Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Bearded Tit",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Bee-eater",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Bewick’s Swan",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Bittern",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Black-headed Gull",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Black Kite",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Black-necked Grebe",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Black Redstart",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Black-tailed Godwit",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Black Tern",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Black-throated Diver",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Black-winged Stilt",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Bluethroat",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Brambling",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Brent Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Bullfinch",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Buzzard",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Canada Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Capercaillie",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Cattle Egret",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Cetti’s Warbler",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Chough",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Cirl Bunting",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Common Crane",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Common Gull",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Common (Scarlet) Rosefinch",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Common Sandpiper",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Common Scoter",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Common Tern",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Cormorant",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Corn Bunting",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Corncrake",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Crested Tit",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Crossbill",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Cuckoo",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Curlew",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Dartford Warbler",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Dipper",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Dotterel",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Dunlin",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Eider",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Falcons (all species- Falconidae)",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Fieldfare",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Firecrest",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Gadwall",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Gannet",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Garden Warbler",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Garganey",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Geese (all species - Anser and Branta)",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Golden Eagle",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Goldeneye",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Golden Oriole",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Golden Plover",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Goosander",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Goshawk",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Grasshopper Warbler",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Great Northern Diver",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Great Skua",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Green Sandpiper",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Greenshank",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Grey Heron",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Greylag Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": "Outer Hebrides, Caithness, Sutherland and Wester Ross only",
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Grey Partridge",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Gyr Falcon",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Harriers (all species - Circus)",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Hen Harrier",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Hobby",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Honey Buzzard",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Hoopoe",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "House Sparrow",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Jack Snipe",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Kentish Plover",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Kestrel",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Kingfisher",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Lapland Bunting",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Lapwing",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Leach’s Petrel",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Lesser Whitethroat",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Little Bittern",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Little Egret",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Little Grebe",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Little Gull",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Little Owl",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Little Ringed Plover",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Little Tern",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Long-eared Owl",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Long-tailed Duck",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Manx Shearwater",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Marsh Harrier",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Marsh Warbler",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Mediterranean Gull",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Merlin",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Montagu’s Harrier",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Nightjar",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Osprey",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Owls (all species)",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Parrot Crossbill",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Peregrine",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Pied Flycatcher",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Pink-footed Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Pintail",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Pochard",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Puffin",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Purple Heron",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Purple Sandpiper",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Quail",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Red-backed Shrike",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Red Kite",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Red-necked Phalarope",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Redshank",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Redstart",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Red-throated Diver",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Redwing",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Reed Bunting",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Reed Warbler",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Ring Ouzel",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Ringed Plover",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Roseate Tern",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Rough-legged Buzzard",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Ruff",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Sand Martin",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Sandwich Tern",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Savi’s Warbler",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Scaup",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Scottish Crossbill",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Serin",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Shag",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Shelduck",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Shore Lark",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Short-eared Owl",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Short-toed Treecreeper",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Shoveler",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Skylark",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Slavonian Grebe",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Snipe",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Snow Bunting",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Snowy Owl",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Song Thrush",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Sparrowhawk",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Spoonbill",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Spotted Crake",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Spotted Flycatcher",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Starling",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Stock Dove",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Stone-curlew",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Storm Petrel",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Swift",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Tawny Owl",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Teal",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Temminck’s Stint",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Terns (all species - Sternidae)",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Tree Pipit",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Tree Sparrow",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Turtle Dove",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Twite",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Velvet Scoter",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Water Rail",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Whimbrel",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Whinchat",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "White-fronted Goose",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "White-tailed Eagle",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Whooper Swan",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Wigeon",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Woodcock",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Woodlark",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Wood Sandpiper",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Wood Warbler",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Wryneck",
+      "protected_in": {
+        "England": true,
+        "Scotland": true,
+        "Wales": true,
+        "Northern Ireland": false,
+        "Republic of Ireland": false,
+        "Isle of Man": false
+      }
+    },
+    {
+      "name": "Yellowhammer",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": false,
+        "Isle of Man": true
+      }
+    },
+    {
+      "name": "Yellow Wagtail",
+      "protected_in": {
+        "England": false,
+        "Scotland": false,
+        "Wales": false,
+        "Northern Ireland": true,
+        "Republic of Ireland": true,
+        "Isle of Man": false
+      }
+    }
+  ]
+}

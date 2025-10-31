@@ -169,6 +169,7 @@ function updateInfoBanners() {
   [
     { link: "#infoSrc_overview", time: "#infoTime_overview" },
     { link: "#infoSrc_bocc", time: "#infoTime_bocc" },
+    { link: "#infoSrc_scheduleOne", time: "#infoTime_scheduleOne" },
     { link: "#infoSrc_map", time: "#infoTime_map" },
   ].forEach((sel) => {
     const a = document.querySelector(sel.link);
@@ -396,6 +397,26 @@ function showTab(id) {
     else if (state.rows.length) {
       buildOverview();
     }
+  }
+
+  if (id === "bocc") {
+    if (state.rows.length) {
+      buildBoccAnalysis();
+    }
+  }
+
+  if (id === "scheduleOne") {
+    if (state.rows.length) {
+      buildScheduleOneAnalysis();
+    }
+  }
+
+  if (id === "boccRef") {
+    buildBoccReference();
+  }
+
+  if (id === "scheduleOneRef") {
+    buildScheduleOneReference();
   }
 
   updateInfoBanners();
@@ -1169,6 +1190,33 @@ async function loadBoccJson() {
   state.bocc = { listToSpecies, speciesToList, speciesLowerToName, lists };
 }
 
+/* ====== Schedule One JSON ====== */
+async function loadScheduleOneJson() {
+  const res = await fetch("./bto_Schedule_One.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`Failed to load bto_Schedule_One.json (${res.status})`);
+  const j = await res.json();
+
+  const nameToSpecies = {}; // normName(species) -> species data
+  const speciesLowerToName = {}; // normName(species) -> original display name
+  const regions = j.metadata?.regions || [];
+
+  (j.species || []).forEach((s) => {
+    const key = normName(s.name);
+    nameToSpecies[key] = {
+      name: s.name,
+      protected_in: s.protected_in || {}
+    };
+    speciesLowerToName[key] = s.name; // display name
+  });
+
+  state.scheduleOne = { 
+    nameToSpecies, 
+    speciesLowerToName, 
+    regions,
+    metadata: j.metadata
+  };
+}
+
 /* ====== BoCC Analysis & Reference ====== */
 function buildBoccReference() {
   const host = $("#boccRefTable");
@@ -1481,6 +1529,239 @@ function buildBoccAnalysis() {
   }
 }
 
+/* ====== Schedule One Analysis ====== */
+function buildScheduleOneAnalysis() {
+  const fullyProtectedHost = $("#scheduleOneFullyProtected .tbl");
+  const partiallyProtectedHost = $("#scheduleOnePartiallyProtected .tbl");
+  const byRegionHost = $("#scheduleOneByRegion .tbl");
+  const distinctHost = $("#scheduleOneDistinct .tbl");
+
+  [fullyProtectedHost, partiallyProtectedHost, byRegionHost, distinctHost].forEach((h) => {
+    if (h) h.innerHTML = "";
+  });
+
+  if (!state.scheduleOne) {
+    if (distinctHost)
+      distinctHost.innerHTML =
+        '<div class="muted">Schedule One reference not loaded.</div>';
+    return;
+  }
+
+  // Count occurrences by species
+  const occCount = Object.create(null); // normName(species) -> occurrence count
+  const regionOccBySpecies = {}; // normName(species) -> region -> count
+  const distinctByRegion = {}; // region -> Set(canonical species names)
+
+  const ensure = (obj, key, def) => (obj[key] ??= def);
+  const mainRegions = ["England", "Scotland", "Wales"];
+
+  state.rows.forEach((r) => {
+    const names = [r.vernacularName, r.scientificName]
+      .filter(Boolean)
+      .map((s) => s.trim());
+    
+    names.forEach((n) => {
+      const key = normName(n);
+      const species = state.scheduleOne.nameToSpecies[key];
+      if (!species) return;
+
+      occCount[key] = (occCount[key] || 0) + 1;
+
+      // Count by region
+      ensure(regionOccBySpecies, key, {});
+      Object.keys(species.protected_in).forEach(region => {
+        if (species.protected_in[region] === true) {
+          regionOccBySpecies[key][region] = (regionOccBySpecies[key][region] || 0) + 1;
+          ensure(distinctByRegion, region, new Set()).add(n);
+        }
+      });
+    });
+  });
+
+  // Get matched species data
+  const matchedSpecies = Object.keys(occCount).map(key => {
+    const species = state.scheduleOne.nameToSpecies[key];
+    const protectedRegions = Object.keys(species.protected_in).filter(
+      region => species.protected_in[region] === true
+    );
+    const isFullyProtected = mainRegions.every(region => 
+      species.protected_in[region] === true
+    );
+    
+    return {
+      key,
+      name: species.name,
+      count: occCount[key],
+      protectedRegions,
+      isFullyProtected,
+      protection: species.protected_in
+    };
+  }).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+
+  // Fully protected species table
+  const fullyProtected = matchedSpecies.filter(s => s.isFullyProtected);
+  function renderScheduleOneTable(hostDiv, headers, rows) {
+    if (!hostDiv) return;
+    const tbl = document.createElement("table");
+    const thead = document.createElement("thead");
+    thead.appendChild(tr(headers, true));
+    const tbody = document.createElement("tbody");
+    if (!rows.length) {
+      const td = document.createElement("td");
+      td.colSpan = headers.length;
+      td.textContent = "(no matches)";
+      const trr = document.createElement("tr");
+      trr.appendChild(td);
+      tbody.appendChild(trr);
+    } else {
+      rows.forEach((r) => tbody.appendChild(tr(r, false)));
+    }
+    tbl.append(thead, tbody);
+    hostDiv.appendChild(tbl);
+
+    function tr(arr, head) {
+      const row = document.createElement("tr");
+      arr.forEach((cell, idx) => {
+        const el = document.createElement(head ? "th" : "td");
+        if (!head && idx === 0 && cell) {
+          // Species name clickable
+          const btn = document.createElement("button");
+          btn.className = "name-modal-btn";
+          btn.textContent = cell;
+          btn.addEventListener("click", (e) => {
+            e.stopPropagation();
+            const rowsToShow = state.rows.filter(r => {
+              const names = [r.vernacularName, r.scientificName].filter(Boolean);
+              return names.some(n => normName(n) === normName(cell));
+            });
+            openModalWithRows(`Records for Schedule One species: ${cell}`, rowsToShow);
+          });
+          el.appendChild(btn);
+        } else {
+          el.textContent = cell;
+        }
+        row.appendChild(el);
+      });
+      return row;
+    }
+  }
+
+  renderScheduleOneTable(
+    fullyProtectedHost,
+    ["Species", "Occurrences"],
+    fullyProtected.map((s) => [s.name, String(s.count)])
+  );
+
+  // Update heading with count
+  const h2Fully = $("#scheduleOneFullyProtected h2");
+  if (h2Fully) {
+    const base = h2Fully.textContent.replace(/\s*\(\d+\)\s*$/, "");
+    h2Fully.textContent = `${base} (${fullyProtected.length})`;
+  }
+
+  // Partially protected species table
+  const partiallyProtected = matchedSpecies.filter(s => !s.isFullyProtected);
+  renderScheduleOneTable(
+    partiallyProtectedHost,
+    ["Species", "Protected Regions", "Occurrences"],
+    partiallyProtected.map((s) => [
+      s.name, 
+      s.protectedRegions.join(", "), 
+      String(s.count)
+    ])
+  );
+
+  const h2Partial = $("#scheduleOnePartiallyProtected h2");
+  if (h2Partial) {
+    const base = h2Partial.textContent.replace(/\s*\(\d+\)\s*$/, "");
+    h2Partial.textContent = `${base} (${partiallyProtected.length})`;
+  }
+
+  // Region protection table
+  const regionRows = state.scheduleOne.regions.map(region => {
+    const protectedCount = distinctByRegion[region]?.size || 0;
+    return [region, String(protectedCount)];
+  });
+
+  renderScheduleOneTable(
+    byRegionHost,
+    ["Region", "Protected Species Found"],
+    regionRows
+  );
+
+  // Distinct species summary
+  const totalDistinct = matchedSpecies.length;
+  const summaryRows = [
+    ["Total protected species found", String(totalDistinct)],
+    ["Fully protected (England, Scotland, Wales)", String(fullyProtected.length)],
+    ["Partially protected", String(partiallyProtected.length)]
+  ];
+
+  renderScheduleOneTable(
+    distinctHost,
+    ["Protection Status", "Count"],
+    summaryRows
+  );
+
+  // Render attribution for Schedule One data
+  renderAttribution("#attr_scheduleOne");
+}
+
+/* ====== Schedule One Reference ====== */
+function buildScheduleOneReference() {
+  const host = $("#scheduleOneRefTable");
+  host.innerHTML = "";
+  if (!state.scheduleOne) {
+    host.innerHTML = '<div class="muted">Schedule One reference not loaded.</div>';
+    return;
+  }
+
+  const table = document.createElement("table");
+  const thead = document.createElement("thead");
+  thead.innerHTML = "<tr><th>Species</th><th>England</th><th>Scotland</th><th>Wales</th><th>Northern Ireland</th><th>Republic of Ireland</th><th>Isle of Man</th></tr>";
+  table.appendChild(thead);
+  
+  const tbody = document.createElement("tbody");
+  
+  // Sort species alphabetically
+  const sortedSpecies = Object.values(state.scheduleOne.nameToSpecies)
+    .sort((a, b) => a.name.localeCompare(b.name));
+
+  sortedSpecies.forEach((species) => {
+    const tr = document.createElement("tr");
+
+    const tdSpecies = document.createElement("td");
+    tdSpecies.appendChild(googleLinkEl(species.name));
+
+    const regions = ["England", "Scotland", "Wales", "Northern Ireland", "Republic of Ireland", "Isle of Man"];
+    const regionTds = regions.map(region => {
+      const td = document.createElement("td");
+      const protection = species.protected_in[region];
+      if (protection === true) {
+        td.textContent = "Yes";
+        td.className = "protected";
+      } else if (protection === false) {
+        td.textContent = "No";
+        td.className = "not-protected";
+      } else if (typeof protection === "string") {
+        td.textContent = protection;
+        td.className = "partial-protection";
+        td.title = protection;
+      } else {
+        td.textContent = "No";
+        td.className = "not-protected";
+      }
+      return td;
+    });
+
+    tr.append(tdSpecies, ...regionTds);
+    tbody.appendChild(tr);
+  });
+  
+  table.appendChild(tbody);
+  host.appendChild(table);
+}
+
 /* ====== Map (Leaflet) ====== */
 function ensureMap() {
   if (state.map) return;
@@ -1584,6 +1865,7 @@ function rebuildAll() {
 
     if (state.bocc) {
       buildBoccAnalysis();
+      buildScheduleOneAnalysis();
       buildBoccReference();
     }
   } else {
@@ -1693,6 +1975,18 @@ function wireControls() {
     $(
       "#boccRefTable"
     ).innerHTML = `<div class="muted">Failed to load bocc.json (${escapeHtml(
+      e.message || String(e)
+    )}).</div>`;
+  }
+  
+  try {
+    await loadScheduleOneJson();
+    buildScheduleOneReference(); // show reference even before fetching results
+  } catch (e) {
+    console.warn("Schedule One JSON load failed:", e);
+    $(
+      "#scheduleOneRefTable"
+    ).innerHTML = `<div class="muted">Failed to load bto_Schedule_One.json (${escapeHtml(
       e.message || String(e)
     )}).</div>`;
   }

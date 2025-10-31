@@ -26,7 +26,7 @@
   <link href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" rel="stylesheet" />
   <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js" defer></script>
 
-  <script src="./app.js" type="module" defer></script>
+  <script src="./app.js" defer></script>
 </head>
 
 <body>
@@ -36,8 +36,10 @@
       <button class="btn primary" data-goto="home">Home</button>
       <button class="btn" data-goto="overview">Results - overview</button>
       <button class="btn" data-goto="bocc">Resutls - BoCC Analysis</button>
+      <button class="btn" data-goto="scheduleOne">Results - Schedule One</button>
       <button class="btn" data-goto="map">Results - Map</button>
-      <button class="btn" data-goto="boccRef">Reference</button>
+      <button class="btn" data-goto="boccRef">BoCC Reference</button>
+      <button class="btn" data-goto="scheduleOneRef">Schedule One Reference</button>
     </nav>
   </header>
 
@@ -283,6 +285,56 @@
       </div>
     </section>
 
+    <!-- SCHEDULE ONE ANALYSIS -->
+    <section id="scheduleOne" hidden>
+      <div class="grid">
+        <div class="card col-12">
+          <div class="titlebar">
+            <h1>Schedule One Bird Species Analysis</h1>
+            <div class="muted">Matches your results to birds protected under Schedule 1 of the Wildlife and Countryside Act 1981.
+            </div>
+          </div>
+          <!-- Info banner -->
+          <div class="infobar" aria-live="polite">
+            <span class="src">Source: <a id="infoSrc_scheduleOne" href="#" target="_blank" rel="noopener">-</a></span>
+            <span class="sep">·</span>
+            <span class="time">Fetched: <span id="infoTime_scheduleOne">-</span></span>
+          </div>
+        </div>
+
+        <!-- Count of protected species found by region -->
+        <div id="scheduleOneDistinct" class="card col-12">
+          <h2>Count of unique Schedule One protected species found</h2>
+          <div class="tbl"></div>
+        </div>
+
+        <!-- Matched species tables by protection status -->
+        <div id="scheduleOneFullyProtected" class="card col-12">
+          <h2>Fully protected species — matched species</h2>
+          <div class="help">Species protected in all main regions (England, Scotland, Wales) | Occurrences</div>
+          <div class="tbl"></div>
+        </div>
+
+        <div id="scheduleOnePartiallyProtected" class="card col-12">
+          <h2>Partially protected species — matched species</h2>
+          <div class="help">Species protected in some regions | Protected regions | Occurrences</div>
+          <div class="tbl"></div>
+        </div>
+
+        <div id="scheduleOneByRegion" class="card col-12">
+          <h2>Protection by region</h2>
+          <div class="help">Breakdown of species protection status by region</div>
+          <div class="tbl"></div>
+        </div>
+
+        <div class="card col-12">
+          <h2>Attribution</h2>
+          <div id="attr_scheduleOne" class="attribution"></div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- BOCC REFERENCE -->
     <section id="boccRef" hidden>
       <div class="grid">
@@ -292,6 +344,19 @@
             <div class="muted">This is an offline copy sourced from <a href ="https://www.bto.org/our-work/science/publications/reports/birds-conservation-concern">BTO - BoCC 5</a></div>
           </div>
           <div id="boccRefTable"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCHEDULE ONE REFERENCE -->
+    <section id="scheduleOneRef" hidden>
+      <div class="grid">
+        <div class="card col-12">
+          <div class="titlebar">
+            <h1>Schedule One Bird Species Reference</h1>
+            <div class="muted">Birds protected under Schedule 1 of the Wildlife and Countryside Act 1981 - sourced from <a href="https://www.bto.org/get-involved/volunteer/projects/bird-ringing-scheme/taking-part/protected-birds/s1-list" target="_blank" rel="noopener">BTO Schedule 1 List</a></div>
+          </div>
+          <div id="scheduleOneRefTable"></div>
         </div>
       </div>
     </section>
