@@ -1584,32 +1584,33 @@ function buildScheduleOneAnalysis() {
       const key = normName(n);
       let species = state.scheduleOne.nameToSpecies[key];
       
-      // TEMPORARILY DISABLE FUZZY MATCHING TO DEBUG
-      /*
-      // If no direct match, try to find a partial match
+      // If no direct match, try more conservative fuzzy matching
       if (!species) {
-        // Try to find species where the occurrence name contains or is contained in the Schedule One name
-        const possibleMatches = Object.keys(state.scheduleOne.nameToSpecies).filter(scheduleKey => {
-          const scheduleSpecies = state.scheduleOne.nameToSpecies[scheduleKey];
-          if (!scheduleSpecies || !scheduleSpecies.name) return false;
+        // Only try fuzzy matching for strings that are reasonably long and look like bird names
+        if (key.length >= 4 && !key.includes('weed') && !key.includes('grass') && !key.includes('tree')) {
+          const possibleMatches = Object.keys(state.scheduleOne.nameToSpecies).filter(scheduleKey => {
+            const scheduleSpecies = state.scheduleOne.nameToSpecies[scheduleKey];
+            if (!scheduleSpecies || !scheduleSpecies.name) return false;
+            
+            const scheduleName = normName(scheduleSpecies.name);
+            
+            // More conservative matching: only if the difference is small and one is a substring of the other
+            // AND the names are similar in length (within 3 characters)
+            const lengthDiff = Math.abs(scheduleName.length - key.length);
+            if (lengthDiff <= 3) {
+              return scheduleName.includes(key) || key.includes(scheduleName);
+            }
+            return false;
+          });
           
-          const scheduleName = scheduleSpecies.name;
-          const normalizedScheduleName = normName(scheduleName);
-          
-          // Check if names are similar (one contains the other)
-          return normalizedScheduleName.includes(key) || key.includes(normalizedScheduleName);
-        });
-        
-        if (possibleMatches.length === 1) {
-          species = state.scheduleOne.nameToSpecies[possibleMatches[0]];
-          if (species) {
-            console.log("Fuzzy match found:", n, "->", species.name);
+          if (possibleMatches.length === 1) {
+            species = state.scheduleOne.nameToSpecies[possibleMatches[0]];
+            if (species) {
+              console.log("Conservative fuzzy match found:", n, "->", species.name);
+            }
           }
-        } else if (possibleMatches.length > 1) {
-          console.log("Multiple possible matches for:", n, "->", possibleMatches.map(k => state.scheduleOne.nameToSpecies[k]?.name).filter(Boolean));
         }
       }
-      */
       
       if (!species || !species.protected_in) {
         // Log first few misses for debugging
@@ -1617,13 +1618,6 @@ function buildScheduleOneAnalysis() {
           console.log("No Schedule One match found for:", n, "normalized:", key);
         }
         return;
-      }
-
-      // Debug specific problematic species
-      if (n.toLowerCase().includes('silverweed') || n.toLowerCase().includes('otter')) {
-        console.warn("UNEXPECTED MATCH - Non-bird species matched:", n, "->", species.name);
-        console.warn("Species data:", species);
-        return; // Skip non-bird species
       }
 
       console.log("Schedule One match found:", n, "->", species.name);
