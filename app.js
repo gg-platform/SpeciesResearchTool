@@ -1572,6 +1572,11 @@ function buildScheduleOneAnalysis() {
   const ensure = (obj, key, def) => (obj[key] ??= def);
   const mainRegions = ["England", "Scotland", "Wales"];
 
+  console.log("Schedule One species available:");
+  console.log("First 10 species:", Object.keys(state.scheduleOne.nameToSpecies).slice(0, 10));
+  console.log("Total Schedule One species:", Object.keys(state.scheduleOne.nameToSpecies).length);
+  console.log("Processing", state.rows.length, "occurrence records...");
+
   state.rows.forEach((r) => {
     const names = [r.vernacularName, r.scientificName]
       .filter(Boolean)
@@ -1579,9 +1584,36 @@ function buildScheduleOneAnalysis() {
     
     names.forEach((n) => {
       const key = normName(n);
-      const species = state.scheduleOne.nameToSpecies[key];
-      if (!species) return;
+      let species = state.scheduleOne.nameToSpecies[key];
+      
+      // If no direct match, try to find a partial match
+      if (!species) {
+        // Try to find species where the occurrence name contains or is contained in the Schedule One name
+        const possibleMatches = Object.keys(state.scheduleOne.nameToSpecies).filter(scheduleKey => {
+          const scheduleName = state.scheduleOne.nameToSpecies[scheduleKey].name;
+          const normalizedScheduleName = normName(scheduleName);
+          
+          // Check if names are similar (one contains the other)
+          return normalizedScheduleName.includes(key) || key.includes(normalizedScheduleName);
+        });
+        
+        if (possibleMatches.length === 1) {
+          species = state.scheduleOne.nameToSpecies[possibleMatches[0]];
+          console.log("Fuzzy match found:", n, "->", species.name);
+        } else if (possibleMatches.length > 1) {
+          console.log("Multiple possible matches for:", n, "->", possibleMatches.map(k => state.scheduleOne.nameToSpecies[k].name));
+        }
+      }
+      
+      if (!species) {
+        // Log first few misses for debugging
+        if (Object.keys(occCount).length < 10) {
+          console.log("No Schedule One match found for:", n, "normalized:", key);
+        }
+        return;
+      }
 
+      console.log("Schedule One match found:", n, "->", species.name);
       occCount[key] = (occCount[key] || 0) + 1;
 
       // Count by region
@@ -1589,11 +1621,15 @@ function buildScheduleOneAnalysis() {
       Object.keys(species.protected_in).forEach(region => {
         if (species.protected_in[region] === true) {
           regionOccBySpecies[key][region] = (regionOccBySpecies[key][region] || 0) + 1;
-          ensure(distinctByRegion, region, new Set()).add(n);
+          ensure(distinctByRegion, region, new Set()).add(key); // Store normalized key instead of raw name
         }
       });
     });
   });
+
+  console.log("Matches found:", Object.keys(occCount).length);
+  console.log("Species with occurrences:", occCount);
+  console.log("distinctByRegion:", distinctByRegion);
 
   // Get matched species data
   const matchedSpecies = Object.keys(occCount).map(key => {
@@ -1617,7 +1653,7 @@ function buildScheduleOneAnalysis() {
 
   // Fully protected species table
   const fullyProtected = matchedSpecies.filter(s => s.isFullyProtected);
-  function renderScheduleOneTable(hostDiv, headers, rows) {
+  function renderScheduleOneTable(hostDiv, headers, rows, tableType = "species", regionData = null) {
     if (!hostDiv) return;
     const tbl = document.createElement("table");
     const thead = document.createElement("thead");
@@ -1641,17 +1677,44 @@ function buildScheduleOneAnalysis() {
       arr.forEach((cell, idx) => {
         const el = document.createElement(head ? "th" : "td");
         if (!head && idx === 0 && cell) {
-          // Species name clickable
+          // First column clickable
           const btn = document.createElement("button");
           btn.className = "name-modal-btn";
           btn.textContent = cell;
           btn.addEventListener("click", (e) => {
             e.stopPropagation();
-            const rowsToShow = state.rows.filter(r => {
-              const names = [r.vernacularName, r.scientificName].filter(Boolean);
-              return names.some(n => normName(n) === normName(cell));
-            });
-            openModalWithRows(`Records for Schedule One species: ${cell}`, rowsToShow);
+            let rowsToShow = [];
+            
+            if (tableType === "region" && regionData) {
+              // For region table, find all species protected in this region
+              const regionName = cell;
+              const speciesKeysInRegion = regionData[regionName] || new Set();
+              console.log("Region clicked:", regionName);
+              console.log("Species keys in region:", speciesKeysInRegion);
+              
+              rowsToShow = state.rows.filter(r => {
+                const names = [r.vernacularName, r.scientificName].filter(Boolean);
+                const hasMatch = names.some(n => {
+                  const normalizedName = normName(n);
+                  return speciesKeysInRegion.has(normalizedName);
+                });
+                if (hasMatch) {
+                  console.log("Found matching record:", names);
+                }
+                return hasMatch;
+              });
+              
+              console.log("Filtered rows:", rowsToShow.length);
+              openModalWithRows(`Records for Schedule One protected species in: ${cell}`, rowsToShow);
+            } else {
+              // For species tables, find records matching the species name
+              rowsToShow = state.rows.filter(r => {
+                const names = [r.vernacularName, r.scientificName].filter(Boolean);
+                return names.some(n => normName(n) === normName(cell));
+              });
+              
+              openModalWithRows(`Records for Schedule One species: ${cell}`, rowsToShow);
+            }
           });
           el.appendChild(btn);
         } else {
@@ -1700,10 +1763,15 @@ function buildScheduleOneAnalysis() {
     return [region, String(protectedCount)];
   });
 
+  console.log("distinctByRegion data:", distinctByRegion);
+  console.log("regionRows:", regionRows);
+
   renderScheduleOneTable(
     byRegionHost,
     ["Region", "Protected Species Found"],
-    regionRows
+    regionRows,
+    "region",
+    distinctByRegion
   );
 
   // Distinct species summary
