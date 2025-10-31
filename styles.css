@@ -349,4 +349,22 @@ th,td{ word-break:break-word; }
   padding: 0 !important;
 }
 
+/* Schedule One protection status styles */
+.protected {
+  background-color: #d4edda;
+  color: #155724;
+  font-weight: bold;
+}
+
+.not-protected {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+.partial-protection {
+  background-color: #fff3cd;
+  color: #856404;
+  font-style: italic;
+}
+
 

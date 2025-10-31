@@ -406,16 +406,21 @@ function showTab(id) {
   }
 
   if (id === "scheduleOne") {
+    console.log("Showing scheduleOne tab, state.rows.length:", state.rows.length);
     if (state.rows.length) {
       buildScheduleOneAnalysis();
+    } else {
+      console.log("No data rows available for Schedule One analysis");
     }
   }
 
   if (id === "boccRef") {
+    console.log("Showing boccRef tab");
     buildBoccReference();
   }
 
   if (id === "scheduleOneRef") {
+    console.log("Showing scheduleOneRef tab");
     buildScheduleOneReference();
   }
 
@@ -1531,16 +1536,28 @@ function buildBoccAnalysis() {
 
 /* ====== Schedule One Analysis ====== */
 function buildScheduleOneAnalysis() {
+  console.log("buildScheduleOneAnalysis called");
+  console.log("state.rows.length:", state.rows.length);
+  console.log("state.scheduleOne:", state.scheduleOne);
+  
   const fullyProtectedHost = $("#scheduleOneFullyProtected .tbl");
   const partiallyProtectedHost = $("#scheduleOnePartiallyProtected .tbl");
   const byRegionHost = $("#scheduleOneByRegion .tbl");
   const distinctHost = $("#scheduleOneDistinct .tbl");
+
+  console.log("Host elements found:", {
+    fullyProtectedHost,
+    partiallyProtectedHost,
+    byRegionHost,
+    distinctHost
+  });
 
   [fullyProtectedHost, partiallyProtectedHost, byRegionHost, distinctHost].forEach((h) => {
     if (h) h.innerHTML = "";
   });
 
   if (!state.scheduleOne) {
+    console.warn("state.scheduleOne not loaded");
     if (distinctHost)
       distinctHost.innerHTML =
         '<div class="muted">Schedule One reference not loaded.</div>';
@@ -1709,13 +1726,25 @@ function buildScheduleOneAnalysis() {
 
 /* ====== Schedule One Reference ====== */
 function buildScheduleOneReference() {
+  console.log("buildScheduleOneReference called");
   const host = $("#scheduleOneRefTable");
+  console.log("host element:", host);
+  console.log("state.scheduleOne:", state.scheduleOne);
+  
+  if (!host) {
+    console.error("scheduleOneRefTable element not found");
+    return;
+  }
+  
   host.innerHTML = "";
   if (!state.scheduleOne) {
+    console.warn("state.scheduleOne not loaded");
     host.innerHTML = '<div class="muted">Schedule One reference not loaded.</div>';
     return;
   }
 
+  console.log("Building schedule one reference table...");
+  
   const table = document.createElement("table");
   const thead = document.createElement("thead");
   thead.innerHTML = "<tr><th>Species</th><th>England</th><th>Scotland</th><th>Wales</th><th>Northern Ireland</th><th>Republic of Ireland</th><th>Isle of Man</th></tr>";
@@ -1727,7 +1756,10 @@ function buildScheduleOneReference() {
   const sortedSpecies = Object.values(state.scheduleOne.nameToSpecies)
     .sort((a, b) => a.name.localeCompare(b.name));
 
+  console.log("Number of species to display:", sortedSpecies.length);
+
   sortedSpecies.forEach((species) => {
+    console.log("Processing species:", species.name);
     const tr = document.createElement("tr");
 
     const tdSpecies = document.createElement("td");
@@ -1760,6 +1792,10 @@ function buildScheduleOneReference() {
   
   table.appendChild(tbody);
   host.appendChild(table);
+  
+  console.log("Schedule One reference table added to DOM");
+  console.log("Table element:", table);
+  console.log("Host element after adding table:", host);
 }
 
 /* ====== Map (Leaflet) ====== */
@@ -1980,8 +2016,11 @@ function wireControls() {
   }
   
   try {
+    console.log("Loading Schedule One JSON...");
     await loadScheduleOneJson();
+    console.log("Schedule One JSON loaded successfully:", state.scheduleOne);
     buildScheduleOneReference(); // show reference even before fetching results
+    console.log("Schedule One reference built");
   } catch (e) {
     console.warn("Schedule One JSON load failed:", e);
     $(
