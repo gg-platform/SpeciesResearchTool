@@ -1572,8 +1572,6 @@ function buildScheduleOneAnalysis() {
   const ensure = (obj, key, def) => (obj[key] ??= def);
   const mainRegions = ["England", "Scotland", "Wales"];
 
-  console.log("Schedule One species available:");
-  console.log("First 10 species:", Object.keys(state.scheduleOne.nameToSpecies).slice(0, 10));
   console.log("Total Schedule One species:", Object.keys(state.scheduleOne.nameToSpecies).length);
   console.log("Processing", state.rows.length, "occurrence records...");
 
@@ -1590,7 +1588,10 @@ function buildScheduleOneAnalysis() {
       if (!species) {
         // Try to find species where the occurrence name contains or is contained in the Schedule One name
         const possibleMatches = Object.keys(state.scheduleOne.nameToSpecies).filter(scheduleKey => {
-          const scheduleName = state.scheduleOne.nameToSpecies[scheduleKey].name;
+          const scheduleSpecies = state.scheduleOne.nameToSpecies[scheduleKey];
+          if (!scheduleSpecies || !scheduleSpecies.name) return false;
+          
+          const scheduleName = scheduleSpecies.name;
           const normalizedScheduleName = normName(scheduleName);
           
           // Check if names are similar (one contains the other)
@@ -1599,13 +1600,15 @@ function buildScheduleOneAnalysis() {
         
         if (possibleMatches.length === 1) {
           species = state.scheduleOne.nameToSpecies[possibleMatches[0]];
-          console.log("Fuzzy match found:", n, "->", species.name);
+          if (species) {
+            console.log("Fuzzy match found:", n, "->", species.name);
+          }
         } else if (possibleMatches.length > 1) {
-          console.log("Multiple possible matches for:", n, "->", possibleMatches.map(k => state.scheduleOne.nameToSpecies[k].name));
+          console.log("Multiple possible matches for:", n, "->", possibleMatches.map(k => state.scheduleOne.nameToSpecies[k]?.name).filter(Boolean));
         }
       }
       
-      if (!species) {
+      if (!species || !species.protected_in) {
         // Log first few misses for debugging
         if (Object.keys(occCount).length < 10) {
           console.log("No Schedule One match found for:", n, "normalized:", key);
@@ -1634,6 +1637,11 @@ function buildScheduleOneAnalysis() {
   // Get matched species data
   const matchedSpecies = Object.keys(occCount).map(key => {
     const species = state.scheduleOne.nameToSpecies[key];
+    if (!species || !species.protected_in) {
+      console.warn("Species data missing for key:", key);
+      return null;
+    }
+    
     const protectedRegions = Object.keys(species.protected_in).filter(
       region => species.protected_in[region] === true
     );
@@ -1649,7 +1657,7 @@ function buildScheduleOneAnalysis() {
       isFullyProtected,
       protection: species.protected_in
     };
-  }).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
+  }).filter(Boolean).sort((a, b) => b.count - a.count || a.name.localeCompare(b.name));
 
   // Fully protected species table
   const fullyProtected = matchedSpecies.filter(s => s.isFullyProtected);
