@@ -4,6 +4,6 @@ const SETTINGS = {
   VERSION_NUMBER: "0.2.7"
 };
 
-// Make it available globally for use in HTML
-window.SETTINGS = SETTINGS;
+
+export default SETTINGS;
 
