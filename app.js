@@ -1,4 +1,5 @@
-  
+import SETTINGS from "./config.js";
+
 /* ====== Utilities ===== */
 function googleLinkEl(text) {
   const a = document.createElement("a");
@@ -8,6 +9,14 @@ function googleLinkEl(text) {
   a.textContent = text;
   return a;
 }
+
+function verboseLog(message, ...args) {
+        if (SETTINGS.ENABLE_VERBOSE_LOGGING) {
+            console.log(message, ...args);
+        }
+    }
+ 
+
 
 // Normalise species strings for matching
 function normName(s) {
@@ -406,21 +415,21 @@ function showTab(id) {
   }
 
   if (id === "scheduleOne") {
-    console.log("Showing scheduleOne tab, state.rows.length:", state.rows.length);
+    verboseLog("Showing scheduleOne tab, state.rows.length:", state.rows.length);
     if (state.rows.length) {
       buildScheduleOneAnalysis();
     } else {
-      console.log("No data rows available for Schedule One analysis");
+      verboseLog("No data rows available for Schedule One analysis");
     }
   }
 
   if (id === "boccRef") {
-    console.log("Showing boccRef tab");
+    verboseLog("Showing boccRef tab");
     buildBoccReference();
   }
 
   if (id === "scheduleOneRef") {
-    console.log("Showing scheduleOneRef tab");
+    verboseLog("Showing scheduleOneRef tab");
     buildScheduleOneReference();
   }
 
@@ -1536,16 +1545,16 @@ function buildBoccAnalysis() {
 
 /* ====== Schedule One Analysis ====== */
 function buildScheduleOneAnalysis() {
-  console.log("buildScheduleOneAnalysis called");
-  console.log("state.rows.length:", state.rows.length);
-  console.log("state.scheduleOne:", state.scheduleOne);
+  verboseLog("buildScheduleOneAnalysis called");
+  verboseLog("state.rows.length:", state.rows.length);
+  verboseLog("state.scheduleOne:", state.scheduleOne);
   
   const fullyProtectedHost = $("#scheduleOneFullyProtected .tbl");
   const partiallyProtectedHost = $("#scheduleOnePartiallyProtected .tbl");
   const byRegionHost = $("#scheduleOneByRegion .tbl");
   const distinctHost = $("#scheduleOneDistinct .tbl");
 
-  console.log("Host elements found:", {
+  verboseLog("Host elements found:", {
     fullyProtectedHost,
     partiallyProtectedHost,
     byRegionHost,
@@ -1572,8 +1581,8 @@ function buildScheduleOneAnalysis() {
   const ensure = (obj, key, def) => (obj[key] ??= def);
   const mainRegions = ["England", "Scotland", "Wales"];
 
-  console.log("Total Schedule One species:", Object.keys(state.scheduleOne.nameToSpecies).length);
-  console.log("Processing", state.rows.length, "occurrence records...");
+  verboseLog("Total Schedule One species:", Object.keys(state.scheduleOne.nameToSpecies).length);
+  verboseLog("Processing", state.rows.length, "occurrence records...");
 
   state.rows.forEach((r) => {
     const names = [r.vernacularName, r.scientificName]
@@ -1606,7 +1615,7 @@ function buildScheduleOneAnalysis() {
           if (possibleMatches.length === 1) {
             species = state.scheduleOne.nameToSpecies[possibleMatches[0]];
             if (species) {
-              console.log("Conservative fuzzy match found:", n, "->", species.name);
+              verboseLog("Conservative fuzzy match found:", n, "->", species.name);
             }
           }
         }
@@ -1615,12 +1624,12 @@ function buildScheduleOneAnalysis() {
       if (!species || !species.protected_in) {
         // Log first few misses for debugging
         if (Object.keys(occCount).length < 10) {
-          console.log("No Schedule One match found for:", n, "normalized:", key);
+          verboseLog("No Schedule One match found for:", n, "normalized:", key);
         }
         return;
       }
 
-      console.log("Schedule One match found:", n, "->", species.name);
+      verboseLog("Schedule One match found:", n, "->", species.name);
       occCount[key] = (occCount[key] || 0) + 1;
 
       // Count by region
@@ -1634,9 +1643,9 @@ function buildScheduleOneAnalysis() {
     });
   });
 
-  console.log("Matches found:", Object.keys(occCount).length);
-  console.log("Species with occurrences:", occCount);
-  console.log("distinctByRegion:", distinctByRegion);
+  verboseLog("Matches found:", Object.keys(occCount).length);
+  verboseLog("Species with occurrences:", occCount);
+  verboseLog("distinctByRegion:", distinctByRegion);
 
   // Get matched species data
   const matchedSpecies = Object.keys(occCount).map(key => {
@@ -1701,8 +1710,8 @@ function buildScheduleOneAnalysis() {
               // For region table, find all species protected in this region
               const regionName = cell;
               const speciesKeysInRegion = regionData[regionName] || new Set();
-              console.log("Region clicked:", regionName);
-              console.log("Species keys in region:", speciesKeysInRegion);
+              verboseLog("Region clicked:", regionName);
+              verboseLog("Species keys in region:", speciesKeysInRegion);
               
               rowsToShow = state.rows.filter(r => {
                 const names = [r.vernacularName, r.scientificName].filter(Boolean);
@@ -1711,12 +1720,12 @@ function buildScheduleOneAnalysis() {
                   return speciesKeysInRegion.has(normalizedName);
                 });
                 if (hasMatch) {
-                  console.log("Found matching record:", names);
+                  verboseLog("Found matching record:", names);
                 }
                 return hasMatch;
               });
               
-              console.log("Filtered rows:", rowsToShow.length);
+              verboseLog("Filtered rows:", rowsToShow.length);
               openModalWithRows(`Records for Schedule One protected species in: ${cell}`, rowsToShow);
             } else {
               // For species tables, find records matching the species name
@@ -1775,8 +1784,8 @@ function buildScheduleOneAnalysis() {
     return [region, String(protectedCount)];
   });
 
-  console.log("distinctByRegion data:", distinctByRegion);
-  console.log("regionRows:", regionRows);
+  verboseLog("distinctByRegion data:", distinctByRegion);
+  verboseLog("regionRows:", regionRows);
 
   renderScheduleOneTable(
     byRegionHost,
@@ -1806,10 +1815,10 @@ function buildScheduleOneAnalysis() {
 
 /* ====== Schedule One Reference ====== */
 function buildScheduleOneReference() {
-  console.log("buildScheduleOneReference called");
+  verboseLog("buildScheduleOneReference called");
   const host = $("#scheduleOneRefTable");
-  console.log("host element:", host);
-  console.log("state.scheduleOne:", state.scheduleOne);
+  verboseLog("host element:", host);
+  verboseLog("state.scheduleOne:", state.scheduleOne);
   
   if (!host) {
     console.error("scheduleOneRefTable element not found");
@@ -1823,7 +1832,7 @@ function buildScheduleOneReference() {
     return;
   }
 
-  console.log("Building schedule one reference table...");
+  verboseLog("Building schedule one reference table...");
   
   const table = document.createElement("table");
   const thead = document.createElement("thead");
@@ -1836,10 +1845,10 @@ function buildScheduleOneReference() {
   const sortedSpecies = Object.values(state.scheduleOne.nameToSpecies)
     .sort((a, b) => a.name.localeCompare(b.name));
 
-  console.log("Number of species to display:", sortedSpecies.length);
+  verboseLog("Number of species to display:", sortedSpecies.length);
 
   sortedSpecies.forEach((species) => {
-    console.log("Processing species:", species.name);
+    verboseLog("Processing species:", species.name);
     const tr = document.createElement("tr");
 
     const tdSpecies = document.createElement("td");
@@ -1873,9 +1882,9 @@ function buildScheduleOneReference() {
   table.appendChild(tbody);
   host.appendChild(table);
   
-  console.log("Schedule One reference table added to DOM");
-  console.log("Table element:", table);
-  console.log("Host element after adding table:", host);
+  verboseLog("Schedule One reference table added to DOM");
+  verboseLog("Table element:", table);
+  verboseLog("Host element after adding table:", host);
 }
 
 /* ====== Map (Leaflet) ====== */
@@ -2080,6 +2089,12 @@ function wireControls() {
 
 /* ====== Init ====== */
 (async function init() {
+  // Set version number in the header
+  const versionEl = $("#version");
+  if (versionEl) {
+    versionEl.textContent = `v${SETTINGS.VERSION_NUMBER}`;
+  }
+  
   wireTabs();
   wireControls();
   showTab("home");
@@ -2096,11 +2111,11 @@ function wireControls() {
   }
   
   try {
-    console.log("Loading Schedule One JSON...");
+    verboseLog("Loading Schedule One JSON...");
     await loadScheduleOneJson();
-    console.log("Schedule One JSON loaded successfully:", state.scheduleOne);
+    verboseLog("Schedule One JSON loaded successfully:", state.scheduleOne);
     buildScheduleOneReference(); // show reference even before fetching results
-    console.log("Schedule One reference built");
+    verboseLog("Schedule One reference built");
   } catch (e) {
     console.warn("Schedule One JSON load failed:", e);
     $(
