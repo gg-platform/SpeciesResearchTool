@@ -1584,6 +1584,8 @@ function buildScheduleOneAnalysis() {
       const key = normName(n);
       let species = state.scheduleOne.nameToSpecies[key];
       
+      // TEMPORARILY DISABLE FUZZY MATCHING TO DEBUG
+      /*
       // If no direct match, try to find a partial match
       if (!species) {
         // Try to find species where the occurrence name contains or is contained in the Schedule One name
@@ -1607,6 +1609,7 @@ function buildScheduleOneAnalysis() {
           console.log("Multiple possible matches for:", n, "->", possibleMatches.map(k => state.scheduleOne.nameToSpecies[k]?.name).filter(Boolean));
         }
       }
+      */
       
       if (!species || !species.protected_in) {
         // Log first few misses for debugging
@@ -1614,6 +1617,13 @@ function buildScheduleOneAnalysis() {
           console.log("No Schedule One match found for:", n, "normalized:", key);
         }
         return;
+      }
+
+      // Debug specific problematic species
+      if (n.toLowerCase().includes('silverweed') || n.toLowerCase().includes('otter')) {
+        console.warn("UNEXPECTED MATCH - Non-bird species matched:", n, "->", species.name);
+        console.warn("Species data:", species);
+        return; // Skip non-bird species
       }
 
       console.log("Schedule One match found:", n, "->", species.name);
