@@ -1,4 +1,4 @@
-require("./config.js");
+import SETTINGS from "./config.js";
 
 /* ====== Utilities ===== */
 function googleLinkEl(text) {
