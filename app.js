@@ -2092,7 +2092,7 @@ function wireControls() {
   // Set version number in the header
   const versionEl = $("#version");
   if (versionEl) {
-    versionEl.textContent = `v${SETTINGS.VERSION_NUMBER}`;
+    versionEl.innerHTML = `v${SETTINGS.VERSION_NUMBER}`;
   }
   
   wireTabs();
